@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cosmos — Living Flow Field</title>
+<style>html,body{margin:0;height:100%;background:#05050f;overflow:hidden;font-family:system-ui,sans-serif}canvas{display:block}
+#ui{position:fixed;left:16px;bottom:16px;color:#cfd8ff;font-size:13px;background:#0a0a1c99;padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);line-height:1.6}
+h1{position:fixed;top:16px;left:20px;margin:0;color:#fff;font-weight:200;letter-spacing:.4em;font-size:18px;text-shadow:0 0 20px #7af}</style></head><body>
+<h1>COSMOS</h1><canvas id="c"></canvas>
+<div id="ui">Move mouse to attract · Click to burst · <b>Space</b> changes palette</div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');let W,H;
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}rs();addEventListener('resize',rs);
+let hue=200,mx=W/2,my=H/2,t=0;
+const P=[...Array(2500)].map(()=>({x:Math.random()*W,y:Math.random()*H,v:0,w:Math.random()}));
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+addEventListener('touchmove',e=>{mx=e.touches[0].clientX;my=e.touches[0].clientY});
+addEventListener('keydown',e=>{if(e.code=='Space')hue=(hue+70)%360});
+addEventListener('click',e=>{P.forEach(p=>{const dx=p.x-e.clientX,dy=p.y-e.clientY,d=Math.hypot(dx,dy)+1;if(d<400){p.bx=dx/d*(400-d)/12;p.by=dy/d*(400-d)/12}})});
+function loop(){t+=.003;x.fillStyle='rgba(5,5,15,.07)';x.fillRect(0,0,W,H);x.globalCompositeOperation='lighter';
+for(const p of P){const a=(Math.sin(p.x*.004+t*3)+Math.cos(p.y*.005-t*2)+Math.sin((p.x+p.y)*.002+t))*Math.PI;
+let vx=Math.cos(a)*1.2,vy=Math.sin(a)*1.2;const dx=mx-p.x,dy=my-p.y,d=Math.hypot(dx,dy)+1;
+if(d<250){vx+=dx/d*(250-d)/60;vy+=dy/d*(250-d)/60}
+if(p.bx){vx+=p.bx;vy+=p.by;p.bx*=.94;p.by*=.94;if(Math.abs(p.bx)<.05)p.bx=p.by=0}
+const ox=p.x,oy=p.y;p.x+=vx;p.y+=vy;
+if(p.x<0||p.x>W||p.y<0||p.y>H){p.x=Math.random()*W;p.y=Math.random()*H;continue}
+x.strokeStyle=`hsla(${hue+p.w*80+a*10},90%,${55+p.w*20}%,.5)`;x.lineWidth=.8+p.w;x.beginPath();x.moveTo(ox,oy);x.lineTo(p.x,p.y);x.stroke()}
+x.globalCompositeOperation='source-over';requestAnimationFrame(loop)}loop();
+</script></body></html>
