@@ -29,5 +29,5 @@ function upd(){$('sc').textContent=sc;$('ln').textContent=ln;$('lv').textContent
 function act(k){if(over||paused&&k!='p')return;if(k=='l')mv(-1);if(k=='r')mv(1);if(k=='d'){tick();sc++}if(k=='h')drop();if(k=='u'){const m=rot(p.m);for(const o of[0,-1,1,-2,2])if(!hit(m,p.x+o,p.y)){p.m=m;p.x+=o;break}}}
 onkeydown=e=>{const k={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',' ':'h'}[e.key];if(k){e.preventDefault();act(k)}if(e.key=='p'||e.key=='P')paused^=1;if(e.key=='Enter'&&over)init()};
 document.querySelectorAll('#ct button').forEach(b=>b.onpointerdown=()=>act(b.dataset.k));
-(function f(){draw();upd();requestAnimationFrame(f)})();init();</script>
+init();(function f(){draw();upd();requestAnimationFrame(f)})();</script>
 <style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

@@ -16,7 +16,7 @@ while(next<dist+800)gen();for(const o of ob){const sx=o.x-dist+120;if(sx<70||sx>
 if(o.t=='s'&&sx>120-14&&sx<120+16&&y>GY-34-20+ -4&&y+34>GY-24)die();
 if(o.t=='b'&&sx>120-30&&sx<120+30&&y+34>GY-o.h+6)die()}}
 part.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.5;p.l-=.02})}
-(function f(){step();const g=x.createLinearGradient(0,0,0,360);g.addColorStop(0,`hsl(${hue},70%,14%)`);g.addColorStop(1,`hsl(${hue+40},70%,28%)`);x.fillStyle=g;x.fillRect(0,0,720,360);
+init();(function f(){step();const g=x.createLinearGradient(0,0,0,360);g.addColorStop(0,`hsl(${hue},70%,14%)`);g.addColorStop(1,`hsl(${hue+40},70%,28%)`);x.fillStyle=g;x.fillRect(0,0,720,360);
 x.fillStyle='#ffffff10';for(let i=0;i<8;i++){const bx=((i*140-dist*.3)%1120+1120)%1120-200;x.fillRect(bx,120,60,GY-120)}
 x.fillStyle='#000a';x.fillRect(0,GY,720,70);x.fillStyle=`hsl(${hue+100},100%,65%)`;x.fillRect(0,GY,720,3);
 for(const o of ob){const sx=o.x-dist+120;if(sx<-60||sx>760)continue;x.fillStyle='#fff';x.shadowColor='#ff2f9a';x.shadowBlur=12;
@@ -24,5 +24,5 @@ if(o.t=='s'){x.beginPath();x.moveTo(sx-16,GY);x.lineTo(sx,GY-34);x.lineTo(sx+16,
 if(st!='dead'){x.save();x.translate(120,y+17);x.rotate(rot);x.fillStyle='#ffe14d';x.shadowColor='#ffe14d';x.shadowBlur=18;x.fillRect(-17,-17,34,34);x.fillStyle='#120a24';x.fillRect(-9,-8,6,6);x.fillRect(3,-8,6,6);x.fillRect(-9,5,18,4);x.restore()}
 part.forEach(p=>{x.fillStyle=`rgba(255,225,77,${Math.max(0,p.l)})`;x.fillRect(p.x,p.y,8,8)});
 x.fillStyle='#fff';x.font='bold 18px system-ui';x.textAlign='left';x.fillText(Math.floor(dist/10)+' m',16,30);x.textAlign='right';x.fillText('Attempt '+att+' · Best '+best+' m',704,30);
-if(st!='play'){x.textAlign='center';x.font='bold 30px system-ui';x.fillText(st=='dead'?'Crashed! Tap to retry':'Tap to start',360,160)}requestAnimationFrame(f)})();init();</script>
+if(st!='play'){x.textAlign='center';x.font='bold 30px system-ui';x.fillText(st=='dead'?'Crashed! Tap to retry':'Tap to start',360,160)}requestAnimationFrame(f)})();</script>
 <style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

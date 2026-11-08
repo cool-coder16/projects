@@ -17,8 +17,8 @@ if(b.vy>0&&b.y>518&&b.y<532&&Math.abs(b.x-px)<pw/2+6){const h=(b.x-px)/(pw/2),s=
 for(const k of br)if(k.a&&b.x>k.x-6&&b.x<k.x+56&&b.y>k.y-6&&b.y<k.y+24){k.a=0;sc+=10;const dx=Math.min(b.x-k.x+6,k.x+56-b.x),dy=Math.min(b.y-k.y+6,k.y+24-b.y);dx<dy?b.vx*=-1:b.vy*=-1;break}
 if(!br.some(k=>k.a)){lv++;lvl();ball();st='ready'}
 if(b.y>570){lives--;if(lives<=0){st='over';best=Math.max(best,sc)}else{ball();st='ready'}}}
-(function f(){step();x.fillStyle='#05070f';x.fillRect(0,0,480,560);br.forEach(k=>{if(k.a){x.fillStyle=`hsl(${k.h%360},85%,60%)`;x.shadowColor=x.fillStyle;x.shadowBlur=8;x.fillRect(k.x,k.y,56,22)}});x.shadowBlur=0;
+init();(function f(){step();x.fillStyle='#05070f';x.fillRect(0,0,480,560);br.forEach(k=>{if(k.a){x.fillStyle=`hsl(${k.h%360},85%,60%)`;x.shadowColor=x.fillStyle;x.shadowBlur=8;x.fillRect(k.x,k.y,56,22)}});x.shadowBlur=0;
 x.fillStyle='#fff';x.shadowColor='#ff9f43';x.shadowBlur=16;x.fillRect(px-pw/2,520,pw,10);x.beginPath();x.arc(b.x,b.y,6,0,7);x.fill();x.shadowBlur=0;
 x.font='bold 16px system-ui';x.textAlign='left';x.fillText('Score '+sc+'  Best '+best,10,24);x.textAlign='right';x.fillText('♥'.repeat(lives)+'  Lv '+(lv+1),470,24);
-if(st!='play'){x.textAlign='center';x.font='bold 26px system-ui';x.fillText(st=='over'?'Game over — click to retry':'Click to launch',240,330)}requestAnimationFrame(f)})();init();</script>
+if(st!='play'){x.textAlign='center';x.font='bold 26px system-ui';x.fillText(st=='over'?'Game over — click to retry':'Click to launch',240,330)}requestAnimationFrame(f)})();</script>
 <style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
