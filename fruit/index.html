@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fruit Slice</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍉</text></svg>">
+<style>:root{--a:#ff6b81}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1a1020;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(94vw,480px);border-radius:14px;touch-action:none;cursor:crosshair;border:1px solid #ffffff22;background:radial-gradient(circle at 50% 30%,#2a1840,#10081a)}</style>
+<main><h1>FRUIT SLICE</h1><canvas id="c" width="480" height="640"></canvas><p>Swipe to slice fruit. Avoid the bombs! Slice 3+ in one swipe for combo bonuses.</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d');let F=[],J=[],tr=[],sc=0,lives=3,st='ready',best=0,t=0,combo=0,sw=0,lx,ly,txt=[];
+const E=['🍎','🍊','🍋','🍉','🍇','🍓','🍍'],R=(a,b)=>a+Math.random()*(b-a);
+function launch(){const n=1+Math.floor(Math.random()*Math.min(3,1+sc/25));for(let i=0;i<n;i++){const b=Math.random()<.14+Math.min(sc/600,.1);F.push({x:R(80,400),y:660,vx:R(-3,3),vy:-R(15,19),e:b?'💣':E[Math.floor(Math.random()*E.length)],b,r:30,rot:0,vr:R(-.1,.1)})}}
+const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width*480,(e.clientY-r.top)/r.height*640]};
+function seg(ax,ay,bx,by,px,py,r){const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1;let u=((px-ax)*dx+(py-ay)*dy)/l;u=Math.max(0,Math.min(1,u));return Math.hypot(ax+u*dx-px,ay+u*dy-py)<r}
+c.onpointerdown=e=>{[lx,ly]=pt(e);sw=1;combo=0;if(st!='play'){F=[];J=[];sc=0;lives=3;st='play';t=0}};
+c.onpointerup=()=>{sw=0;if(combo>=3){sc+=combo;txt.push({x:lx,y:ly,t:1,s:'COMBO +'+combo})}combo=0};
+c.onpointermove=e=>{const[mx,my]=pt(e);if(sw&&st=='play'){tr.push([mx,my,1]);F.forEach(f=>{if(!f.s&&seg(lx,ly,mx,my,f.x,f.y,f.r)){f.s=1;if(f.b){st='over';best=Math.max(best,sc);window.Hub&&Hub.score('fruit',sc)}else{sc++;combo++;for(let i=0;i<8;i++)J.push({x:f.x,y:f.y,vx:R(-4,4),vy:R(-5,2),l:1})}}})}lx=mx;ly=my};
+(function f(){if(st=='play'){t++;if(t%Math.max(35,75-sc)==0)launch();F.forEach(o=>{o.x+=o.vx;o.y+=o.vy;o.vy+=.26;o.rot+=o.vr});
+F=F.filter(o=>{if(o.s)return false;if(o.y>690&&o.vy>0){if(!o.b){lives--;if(lives<=0){st='over';best=Math.max(best,sc);window.Hub&&Hub.score('fruit',sc)}}return false}return true})}
+J.forEach(j=>{j.x+=j.vx;j.y+=j.vy;j.vy+=.3;j.l-=.03});J=J.filter(j=>j.l>0);tr.forEach(p=>p[2]-=.08);tr=tr.filter(p=>p[2]>0);txt.forEach(o=>{o.y-=1;o.t-=.02});txt=txt.filter(o=>o.t>0);
+x.clearRect(0,0,480,640);x.font='56px system-ui';x.textAlign='center';x.textBaseline='middle';F.forEach(o=>{x.save();x.translate(o.x,o.y);x.rotate(o.rot);x.fillText(o.e,0,0);x.restore()});
+J.forEach(j=>{x.fillStyle=`rgba(255,120,140,${j.l})`;x.fillRect(j.x,j.y,5,5)});
+x.strokeStyle='#fff';x.lineCap='round';tr.forEach((p,i)=>{if(i){x.globalAlpha=p[2];x.lineWidth=p[2]*8;x.beginPath();x.moveTo(tr[i-1][0],tr[i-1][1]);x.lineTo(p[0],p[1]);x.stroke()}});x.globalAlpha=1;
+x.textBaseline='alphabetic';x.fillStyle='#fff';x.font='bold 24px system-ui';x.textAlign='left';x.fillText(sc,16,36);x.textAlign='right';x.fillText('♥'.repeat(Math.max(0,lives)),464,36);txt.forEach(o=>{x.globalAlpha=o.t;x.textAlign='center';x.fillStyle='#ffd23f';x.font='bold 22px system-ui';x.fillText(o.s,o.x,o.y)});x.globalAlpha=1;
+if(st!='play'){x.fillStyle='#000a';x.fillRect(0,250,480,140);x.fillStyle='#fff';x.textAlign='center';x.font='bold 32px system-ui';x.fillText(st=='over'?'Game over · '+sc:'Fruit Slice',240,305);x.font='17px system-ui';x.fillText((st=='over'?'Best '+best+' — ':'')+'swipe to '+(st=='over'?'retry':'start'),240,345)}requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

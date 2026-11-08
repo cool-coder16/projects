@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aim Trainer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<style>:root{--a:#ff5d73}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#10131c;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(96vw,640px);border-radius:14px;background:#0a0c13;cursor:crosshair;touch-action:none;border:1px solid #ffffff22}</style>
+<main><h1>AIM TRAINER</h1><canvas id="c" width="640" height="420"></canvas><p>Click targets before they shrink away. Faster hits score more. 30 seconds!</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d');let T=[],sc=0,hit=0,miss=0,st='ready',t0,left=30,best=0,fx=[];
+function spawn(){T.push({x:50+Math.random()*540,y:50+Math.random()*320,r:34,b:Date.now(),life:1300})}
+function start(){T=[];sc=hit=miss=0;st='play';t0=Date.now();spawn()}
+c.onpointerdown=e=>{if(st!='play'){start();return}const r=c.getBoundingClientRect(),mx=(e.clientX-r.left)/r.width*640,my=(e.clientY-r.top)/r.height*420;
+const i=T.findIndex(k=>Math.hypot(k.x-mx,k.y-my)<=k.r*Math.max(.3,1-(Date.now()-k.b)/k.life));
+if(i>=0){const k=T[i],f=1-(Date.now()-k.b)/k.life;sc+=Math.round(10+f*20);hit++;fx.push({x:k.x,y:k.y,t:1});T.splice(i,1);spawn();if(Math.random()<.3)spawn()}else{miss++;sc=Math.max(0,sc-5)}};
+function end(){st='over';best=Math.max(best,sc);window.Hub&&Hub.score('aim',sc)}
+(function f(){if(st=='play'){left=Math.max(0,30-(Date.now()-t0)/1000);if(left<=0)end();T=T.filter(k=>{if(Date.now()-k.b>k.life){miss++;spawn();return false}return true});if(T.length<1)spawn()}
+x.fillStyle='#0a0c13';x.fillRect(0,0,640,420);T.forEach(k=>{const s=Math.max(.05,1-(Date.now()-k.b)/k.life),r=k.r*s;x.fillStyle='#ff5d73';x.shadowColor='#ff5d73';x.shadowBlur=14;x.beginPath();x.arc(k.x,k.y,r,0,7);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(k.x,k.y,r*.55,0,7);x.fill();x.fillStyle='#ff5d73';x.beginPath();x.arc(k.x,k.y,r*.2,0,7);x.fill()});x.shadowBlur=0;
+fx=fx.filter(e=>e.t>0);fx.forEach(e=>{x.strokeStyle=`rgba(255,255,255,${e.t})`;x.beginPath();x.arc(e.x,e.y,40*(1-e.t)+10,0,7);x.stroke();e.t-=.08});
+x.fillStyle='#fff';x.font='bold 20px system-ui';x.textAlign='left';x.fillText('Score '+sc,14,30);x.textAlign='right';x.fillText(Math.ceil(left)+'s',626,30);x.textAlign='center';const acc=hit+miss?Math.round(hit/(hit+miss)*100):100;x.font='15px system-ui';x.fillText('Hits '+hit+' · Accuracy '+acc+'%',320,30);
+if(st!='play'){x.fillStyle='#000a';x.fillRect(0,140,640,140);x.fillStyle='#fff';x.font='bold 32px system-ui';x.fillText(st=='over'?'Score '+sc+' · '+acc+'% accuracy':'Aim Trainer',320,200);x.font='17px system-ui';x.fillText((st=='over'?'Best '+best+' — ':'')+'click to '+(st=='over'?'retry':'start'),320,240)}requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

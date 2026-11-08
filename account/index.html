@@ -12,7 +12,6 @@ table{width:100%;border-collapse:collapse;margin:12px 0}td{padding:8px 4px;borde
 <main><h1>ACCOUNT</h1><div class="card" id="c">Loading…</div></main>
 <script>
 const $=id=>document.getElementById(id),UN=/^[a-z0-9_]{3,20}$/;
-const NAMES={ballrun:'Ball Run (distance)',snake:'Neon Snake',typing:'Keyflow (WPM)',cubedash:'Cube Dash (m)',blockfall:'Blockfall',breakout:'Brick Breaker',beattiles:'Beat Tiles',blaster:'Star Blaster',stack:'Stack',2048:'2048',neondrive:'Neon Drive',geoquiz:'Geo Quiz (of 10)',reflex:'Reflex (ms, lower wins)',echo:'Echo (level)',pairs:'Pairs (moves, lower wins)',minefield:'Minefield (secs, lower wins)',maze:'Lantern Maze (level)',slingshot:'Slingshot',laser:'Laser Lab',wordfive:'Word Five (guesses, lower wins)'};
 let A,D,tab='login';
 const say=(t,k)=>{$('msg').textContent=t;$('msg').className=k||''};
 const ERR={'auth/email-already-in-use':'That email already has an account.','auth/invalid-email':'That email looks invalid.','auth/weak-password':'Password must be at least 6 characters.','auth/network-request-failed':'Network problem — try again.','auth/too-many-requests':'Too many tries — wait a bit.'};
@@ -26,13 +25,13 @@ async function act(){const u=($('u').value||'').trim().toLowerCase();
  if(tab=='signup'){if(!UN.test(u))return say('Username must be 3–20 characters: a–z, 0–9 or _','e');if(await lookup(u))return say('That username is taken','e');
   const c=await A.createUserWithEmailAndPassword($('e').value.trim(),$('p').value);
   try{await D.collection('usernames').doc(u).set({uid:c.user.uid,email:c.user.email,username:u});await c.user.updateProfile({displayName:u})}catch(x){await c.user.delete();return say('That username was just taken — try another','e')}
-  Hub.wr('hubUser',{username:u});await Hub.sync();return inn(A.currentUser)}
- if(tab=='login'){const d=await lookup(u);if(!d)return say('Wrong username or password.','e');await A.signInWithEmailAndPassword(d.email,$('p').value);Hub.wr('hubUser',{username:u});await Hub.sync();return inn(A.currentUser)}
+  Hub.wr('hubUser',{username:u});Hub.badge();await Hub.sync();return inn(A.currentUser)}
+ if(tab=='login'){const d=await lookup(u);if(!d)return say('Wrong username or password.','e');await A.signInWithEmailAndPassword(d.email,$('p').value);Hub.wr('hubUser',{username:u});Hub.badge();await Hub.sync();return inn(A.currentUser)}
  const d=await lookup(u);if(d)await A.sendPasswordResetEmail(d.email);say('If that username exists, a reset link was sent to the email on file. Check your inbox (and spam).','o')}
 async function inn(u){$('c').innerHTML='Loading your scores…';let s=Hub.rd('hubScores')||{};try{s=(await Hub.sync())||s}catch(e){}
  const rows=Object.entries(s).map(([g,x])=>`<tr><td></td><td>${x.v}</td></tr>`).join('');
  $('c').innerHTML=`<div style="font-size:20px">👋 Hi, <b id="nm"></b></div><small id="em"></small><h3 style="margin:18px 0 0;font-weight:600">Your best scores</h3><table id="t">${rows||'<tr><td colspan=2 style="text-align:left;color:inherit;font-weight:400">No scores yet — go play something!</td></tr>'}</table><button class="go" id="so" style="background:#ffffff22;color:#fff">Log out</button>`;
- $('nm').textContent=u.displayName||'';$('em').textContent=u.email||'';[...$('t').rows].forEach((r,i)=>{const e=Object.keys(s)[i];if(e)r.cells[0].textContent=NAMES[e]||e});
+ $('nm').textContent=u.displayName||'';$('em').textContent=u.email||'';[...$('t').rows].forEach((r,i)=>{const e=Object.keys(s)[i];if(e){const G=Hub.GAMES[e];r.cells[0].textContent=G?G.name:e;if(G)r.cells[1].textContent=s[e].v+' '+G.unit}});
  $('so').onclick=async()=>{await A.signOut()}}
 (async()=>{try{({auth:A,db:D}=await Hub.load())}catch(e){$('c').textContent='Could not load the account service (blocked or offline).';return}
  A.onAuthStateChanged(u=>{if(u&&u.displayName){Hub.wr('hubUser',{username:u.displayName});Hub.badge();inn(u)}else if(!u){try{localStorage.removeItem('hubUser')}catch(e){}Hub.badge();out()}})})();

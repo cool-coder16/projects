@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leaderboards</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+<style>body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#1b2440,#0a0d16 60%);color:#e6edf3;font-family:system-ui,sans-serif;padding:70px 16px 40px}
+main{max-width:760px;margin:auto}h1{font-weight:200;letter-spacing:.35em;text-align:center;margin:0 0 6px}.sub{text-align:center;opacity:.6;margin:0 0 22px}
+#chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}#chips button{background:#ffffff14;color:#fff;border:1px solid #ffffff1a;border-radius:18px;padding:7px 13px;cursor:pointer;font-size:14px}#chips button:hover{background:#ffffff24}#chips button.s{background:#7ee0ff;color:#000;font-weight:700}
+.card{background:#ffffff0d;border:1px solid #ffffff1a;border-radius:16px;padding:18px}.hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.hd h2{margin:0;font-size:22px}
+.hd a,.hd button{background:#7ee0ff;color:#000;text-decoration:none;border:0;border-radius:16px;padding:7px 14px;font-weight:700;font-size:14px;cursor:pointer;margin-left:6px}.hd button{background:#ffffff22;color:#fff}
+table{width:100%;border-collapse:collapse}td{padding:10px 6px;border-bottom:1px solid #ffffff12}td:first-child{width:50px;text-align:center;font-size:18px}td:last-child{text-align:right;font-weight:800;color:#7ee0ff}tr.me td{background:#7ee0ff1a}
+.e{text-align:center;opacity:.65;padding:28px 0}#pbar{position:fixed;top:0;left:0;right:0;padding:12px;display:flex;justify-content:space-between}#pbar a{color:#fff;text-decoration:none;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;font:600 14px system-ui}</style></head><body>
+<div id="pbar"><a href="../">Projects</a><a href="../">🏠</a></div>
+<main><h1>LEADERBOARDS</h1><p class="sub">Top players for every game · <a href="../account/" style="color:#7ee0ff">log in</a> so your scores are posted</p><div id="chips"></div><div class="card"><div class="hd"><h2 id="gt"></h2><div><a id="pl" href="#">▶ Play</a><button id="rf">↻</button></div></div><div id="lb"></div></div></main>
+<script>
+const $=id=>document.getElementById(id),G=Hub.LIST,me=(Hub.rd('hubUser')||{}).username;let db,cur;
+G.forEach(g=>{const b=document.createElement('button');b.textContent=g.name;b.dataset.id=g.id;b.onclick=()=>show(g.id);$('chips').append(b)});
+async function show(id){cur=id;const g=Hub.GAMES[id];location.hash=id;[...$('chips').children].forEach(b=>b.classList.toggle('s',b.dataset.id==id));$('gt').textContent=g.name+' — '+(g.low?'lowest':'highest')+' '+g.unit;$('pl').href='../'+g.dir+'/';$('lb').innerHTML='<div class="e">Loading…</div>';
+ try{if(!db)db=(await Hub.load()).db;const q=await db.collection('leaderboard').doc(id).collection('entries').orderBy('score',g.low?'asc':'desc').limit(25).get();
+  if(cur!=id)return;if(q.empty){$('lb').innerHTML='<div class="e">No scores yet — be the first! 🥇</div>';return}
+  const t=document.createElement('table');let i=0;q.forEach(d=>{const x=d.data(),r=t.insertRow();i++;if(x.username==me)r.className='me';r.insertCell().textContent=['🥇','🥈','🥉'][i-1]||i;r.insertCell().textContent=x.username;r.insertCell().textContent=x.score+' '+g.unit});$('lb').innerHTML='';$('lb').append(t)}
+ catch(e){$('lb').innerHTML='<div class="e">Could not load scores right now.</div>'}}
+$('rf').onclick=()=>show(cur);show(Hub.GAMES[location.hash.slice(1)]?location.hash.slice(1):G[0].id);
+</script></body></html>
