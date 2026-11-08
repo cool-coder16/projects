@@ -1,10 +1,10 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chicken Jump</title>
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chicken Farm</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐔</text></svg>">
 <style>:root{--a:#ffb02e}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#16324a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
 main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
 button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
 <style>canvas{width:min(98vw,720px);border-radius:14px;touch-action:none;cursor:pointer;border:1px solid #ffffff22}</style>
-<main><h1>CHICKEN JUMP</h1><canvas id="c" width="720" height="360"></canvas><p>Click, tap or press Space to jump — press again in mid-air for a flap! Hold for higher jumps. Grab the eggs 🥚</p></main>
+<main><h1>CHICKEN FARM</h1><canvas id="c" width="720" height="360"></canvas><p>Click, tap or press Space to jump — press again in mid-air for a flap! Hold for higher jumps. Grab the eggs 🥚</p></main>
 <script>const c=document.getElementById('c'),x=c.getContext('2d'),GY=290,CX=120;
 let y,vy,jumps,obs,egs,dist,eggN,spd,st='ready',t=0,best=0,next,fx=[],sc=0;
 const R=(a,b)=>a+Math.random()*(b-a),mix=(a,b,k)=>a.map((v,i)=>Math.round(v+(b[i]-v)*k));
@@ -40,5 +40,5 @@ fx.forEach(p=>{x.fillStyle=p.g?`rgba(255,226,122,${p.l})`:`rgba(255,255,255,${p.
 if(st!='over'||y<GY+90){x.fillStyle='#0004';const onG=y>=GY-2&&!inGap();if(onG){x.beginPath();x.ellipse(CX,GY+4,22,6,0,0,7);x.fill()}
 x.save();x.translate(CX,y-22+(y>=GY&&st=='play'?Math.sin(t/2.5)*2:0));x.scale(-1,1);x.rotate(Math.max(-.3,Math.min(.4,-vy*.025)));x.font='50px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('🐔',0,0);x.restore()}
 x.textBaseline='alphabetic';x.fillStyle='#fff';x.font='bold 26px system-ui';x.textAlign='left';x.fillText(st=='over'?sc:score(),16,36);x.font='15px system-ui';x.fillText('🥚 '+eggN+' · Best '+best,16,58);
-if(st!='play'){x.fillStyle='#000a';x.fillRect(0,110,720,130);x.fillStyle='#fff';x.textAlign='center';x.font='bold 34px system-ui';x.fillText(st=='over'?'Fowl play! Score '+sc:'Chicken Jump',360,165);x.font='17px system-ui';x.fillText('Tap or press Space to '+(st=='over'?'try again':'start'),360,205)}requestAnimationFrame(f)})();</script>
+if(st!='play'){x.fillStyle='#000a';x.fillRect(0,110,720,130);x.fillStyle='#fff';x.textAlign='center';x.font='bold 34px system-ui';x.fillText(st=='over'?'Fowl play! Score '+sc:'Chicken Farm',360,165);x.font='17px system-ui';x.fillText('Tap or press Space to '+(st=='over'?'try again':'start'),360,205)}requestAnimationFrame(f)})();</script>
 <style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
