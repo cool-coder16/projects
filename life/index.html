@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Life Lab — Cellular Automata</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+<style>:root{--a:#39ff88}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a0a12;color:#e6ffe9;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:100%;border-radius:12px;border:1px solid #39ff8844;background:#05050a;cursor:crosshair;touch-action:none}input{accent-color:#39ff88;vertical-align:middle}</style>
+<main><h1>LIFE LAB</h1><canvas id="c" width="600" height="400"></canvas><div><button id="pl">▶ Play</button><button id="st">Step</button><button id="rn">Random</button><button id="rp">R-pentomino</button><button id="cl">Clear</button></div>
+<p>Speed <input id="sp" type="range" min="1" max="60" value="15"> · Generation <b id="g">0</b> · Alive <b id="al">0</b><br>Draw cells with your mouse. Any live cell with 2–3 neighbours survives; any dead cell with exactly 3 is born.</p></main>
+<script>const $=id=>document.getElementById(id),c=$('c'),x=c.getContext('2d'),W=60,H=40,Z=10;let g=new Uint8Array(W*H),run=0,gen=0,acc=0,lt=0,paint=null;
+function step(){const n=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let i=0;i<W;i++){let k=0;for(let dy=-1;dy<2;dy++)for(let dx=-1;dx<2;dx++)if(dx||dy)k+=g[((y+dy+H)%H)*W+(i+dx+W)%W];const a=g[y*W+i];n[y*W+i]=k==3||(a&&k==2)?1:0}g=n;gen++}
+function draw(){x.fillStyle='#05050a';x.fillRect(0,0,600,400);let al=0;x.fillStyle='#39ff88';x.shadowColor='#39ff88';x.shadowBlur=8;for(let i=0;i<W*H;i++)if(g[i]){al++;x.fillRect((i%W)*Z+1,Math.floor(i/W)*Z+1,Z-2,Z-2)}x.shadowBlur=0;$('g').textContent=gen;$('al').textContent=al}
+function f(t){acc+=t-lt;lt=t;const iv=1000/$('sp').value;while(run&&acc>iv){step();acc-=iv}if(!run)acc=0;draw();requestAnimationFrame(f)}requestAnimationFrame(f);
+const cell=e=>{const r=c.getBoundingClientRect();return Math.floor((e.clientY-r.top)/r.height*H)*W+Math.floor((e.clientX-r.left)/r.width*W)};
+c.onpointerdown=e=>{const i=cell(e);paint=g[i]?0:1;g[i]=paint;c.setPointerCapture(e.pointerId)};c.onpointermove=e=>{if(paint!==null){const i=cell(e);if(i>=0&&i<W*H)g[i]=paint}};c.onpointerup=()=>paint=null;
+$('pl').onclick=()=>{run^=1;$('pl').textContent=run?'⏸ Pause':'▶ Play'};$('st').onclick=step;$('cl').onclick=()=>{g.fill(0);gen=0};
+$('rn').onclick=()=>{g=g.map(()=>Math.random()<.25?1:0);gen=0};$('rp').onclick=()=>{g.fill(0);gen=0;[[1,0],[2,0],[0,1],[1,1],[1,2]].forEach(([a,b])=>g[(18+b)*W+30+a]=1)};$('rn').click();</script>
+</body></html>

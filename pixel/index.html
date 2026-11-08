@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pixel Studio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
+<style>:root{--a:#ff9f43}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1b1b2a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(86vw,448px);border-radius:8px;image-rendering:pixelated;background:#fff;touch-action:none;cursor:crosshair}#pal{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px auto;max-width:360px}#pal i{width:30px;height:30px;border-radius:8px;border:3px solid transparent;cursor:pointer}#pal i.s{border-color:#fff;transform:scale(1.15)}label{font-size:14px}</style>
+<main><h1>PIXEL STUDIO</h1><canvas id="c" width="448" height="448"></canvas><div id="pal"></div>
+<label><input type="checkbox" id="mi"> Mirror</label> <button id="er">Eraser</button><button id="cl">Clear</button><button id="dl">Download PNG</button><p>Click or drag to paint · right-click erases</p></main>
+<script>const $=id=>document.getElementById(id),c=$('c'),x=c.getContext('2d'),N=16,Z=28,P=['#000000','#ffffff','#ff4d6d','#ff9f43','#ffd23f','#2ecc71','#00b894','#3da5ff','#6c5ce7','#a66bff','#ff6fd8','#8d5524','#c68642','#f1c27d','#636e72','#b2bec3'];
+let col=P[0],g=Array(N*N).fill(null),dn=null;
+P.forEach(p=>{const i=document.createElement('i');i.style.background=p;i.onclick=()=>{col=p;[...$('pal').children].forEach(k=>k.className='');i.className='s'};$('pal').append(i)});$('pal').children[0].className='s';
+function draw(){x.fillStyle='#fff';x.fillRect(0,0,448,448);x.fillStyle='#eee';for(let i=0;i<N*N;i++)if((i%N+Math.floor(i/N))%2)x.fillRect((i%N)*Z,Math.floor(i/N)*Z,Z,Z);g.forEach((v,i)=>{if(v){x.fillStyle=v;x.fillRect((i%N)*Z,Math.floor(i/N)*Z,Z,Z)}})}
+function put(e,erase){const r=c.getBoundingClientRect(),a=Math.floor((e.clientX-r.left)/r.width*N),b=Math.floor((e.clientY-r.top)/r.height*N);if(a<0||b<0||a>=N||b>=N)return;
+const v=erase?null:col;g[b*N+a]=v;if($('mi').checked)g[b*N+N-1-a]=v;draw()}
+c.oncontextmenu=e=>e.preventDefault();c.onpointerdown=e=>{dn=e.button==2||er;c.setPointerCapture(e.pointerId);put(e,dn)};c.onpointermove=e=>{if(dn!==null)put(e,dn)};c.onpointerup=()=>dn=null;
+let er=0;$('er').onclick=()=>{er^=1;$('er').textContent=er?'Eraser ON':'Eraser'};$('cl').onclick=()=>{g.fill(null);draw()};
+$('dl').onclick=()=>{const t=document.createElement('canvas');t.width=t.height=256;const q=t.getContext('2d');g.forEach((v,i)=>{if(v){q.fillStyle=v;q.fillRect((i%N)*16,Math.floor(i/N)*16,16,16)}});const a=document.createElement('a');a.href=t.toDataURL();a.download='pixel-art.png';a.click()};draw();</script>
+</body></html>
