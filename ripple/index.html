@@ -13,4 +13,4 @@ $('au').onclick=()=>{au^=1;$('au').textContent='Auto drops: '+(au?'on':'off')};$
 (function f(){const k=1-$('d').value/1000;if(au&&Math.random()<.04)drop(5+Math.random()*150|0,5+Math.random()*90|0,18);
 for(let s=0;s<2;s++){for(let y=1;y<H-1;y++)for(let i=1;i<W-1;i++){const p=y*W+i;b[p]=((a[p-1]+a[p+1]+a[p-W]+a[p+W])/2-b[p])*k}[a,b]=[b,a]}
 for(let p=0;p<W*H;p++){const v=a[p],q=p*4,l=Math.max(0,Math.min(1,.5+v/20));img.data[q]=10+l*l*230;img.data[q+1]=40+l*190;img.data[q+2]=90+l*165;img.data[q+3]=255}x.putImageData(img,0,0);requestAnimationFrame(f)})();</script>
-<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+<a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

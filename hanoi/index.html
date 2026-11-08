@@ -12,4 +12,4 @@ function pick(i){if(busy)return;if(sel===null){if(p[i].length)sel=i}else{if(sel!
 function go(a,b){p[b].push(p[a].pop());mv++}
 $('sv').onclick=async()=>{init();busy=1;const ms=[];(function h(k,a,b,c){if(!k)return;h(k-1,a,c,b);ms.push([a,b]);h(k-1,c,b,a)})(n,0,2,1);for(const[a,b]of ms){await new Promise(r=>setTimeout(r,450));if(!busy)return;go(a,b);draw()}busy=0;$('msg').textContent='Recursion solves it in '+ms.length+' moves — the perfect minimum!'};
 $('rs').onclick=init;$('n').onchange=init;init();</script>
-<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+<a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

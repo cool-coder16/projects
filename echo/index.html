@@ -14,4 +14,4 @@ async function play(){lock=1;$('msg').textContent='Watch…';await new Promise(r
 function tap(k){if(lock)return;flash(k);if(k!=seq[i]){lock=1;$('msg').textContent='Oops! Wrong one. Press Start to retry.';$('go').textContent='Retry';return}
 if(++i==seq.length){$('lv').textContent=seq.length;best=Math.max(best,seq.length);$('bs').textContent=best;seq.push(Math.floor(Math.random()*4));play()}}
 $('go').onclick=()=>{seq=[Math.floor(Math.random()*4)];$('lv').textContent=0;$('go').textContent='Restart';play()};</script>
-<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+<a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

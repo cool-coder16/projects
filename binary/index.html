@@ -40,4 +40,4 @@ function tab(n){$('p1').style.display=n==1?'':'none';$('p2').style.display=n==2?
 $('t1').onclick=()=>tab(1);$('t2').onclick=()=>tab(2);
 function spell(){$('out').innerHTML=[...$('nm').value].map(c=>`<b style="color:var(--on)">${c}</b> = ${c.charCodeAt(0)} = ${c.charCodeAt(0).toString(2).padStart(8,'0')}`).join('<br>')}
 $('nm').oninput=spell;spell();newQ();
-</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

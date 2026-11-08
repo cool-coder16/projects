@@ -40,4 +40,4 @@ onkeydown=e=>{if(e.code=='Space'){e.preventDefault();toggle()}};
 const sync=()=>S.forEach((r,ri)=>r.forEach((v,i)=>pads[ri][i].classList.toggle('on',!!v)));
 document.getElementById('rnd').onclick=()=>{S.forEach((r,ri)=>r.forEach((_,i)=>r[i]=Math.random()<[.3,.2,.5,.15][ri]?1:0));sync()};
 document.getElementById('clr').onclick=()=>{S.forEach(r=>r.fill(0));sync()};
-</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

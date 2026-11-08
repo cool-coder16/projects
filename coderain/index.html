@@ -11,4 +11,4 @@ $('msg').oninput=setup;onresize=setup;$('col').onclick=()=>{hue=(hue+70)%360};se
 (function f(){x.fillStyle='rgba(0,0,0,.09)';x.fillRect(0,0,W,H);x.font=Z+'px monospace';const sp=$('sp').value/5;
 for(let i=0;i<cols;i++){const y=Math.floor(drops[i]);const lit=y>=0&&mask[(y*mw+i)*4+3]>128;x.fillStyle=lit?'#fff':`hsl(${hue},100%,${60+Math.random()*20}%)`;if(lit){x.shadowColor='#fff';x.shadowBlur=14}x.fillText(ch[Math.random()*ch.length|0],i*Z,y*Z);x.shadowBlur=0;
 drops[i]+=sp*(.5+(i%7)/10);if(drops[i]*Z>H&&Math.random()>.975)drops[i]=Math.random()*-20}requestAnimationFrame(f)})();</script>
-<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+<a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

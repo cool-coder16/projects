@@ -13,4 +13,4 @@ const k=r[0]=='T'?'d':r[0]=='O'?'a':'w';st[k]++;$(k).textContent=st[k];$('msg').
 function mv(i){if(over||b[i])return;b[i]='X';show();if(over)return;let bi,bv=-2;for(let j=0;j<9;j++)if(!b[j]){b[j]='O';const v=mm(b,'X');b[j]='';if(v>bv){bv=v;bi=j}}b[bi]='O';show()}
 function init(){b=Array(9).fill('');over=0;$('bd').innerHTML='';for(let i=0;i<9;i++){const e=document.createElement('button');e.onclick=()=>mv(i);$('bd').append(e)}$('msg').textContent='You are X. Try to beat the perfect AI!';show()}
 $('nw').onclick=init;init();</script>
-<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+<a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

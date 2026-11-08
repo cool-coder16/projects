@@ -10,4 +10,4 @@ p.onpointerdown=()=>{if(s==0){s=1;p.className='w';p.textContent='Wait for green�
 else if(s==1){clearTimeout(tm);s=0;p.className='';p.textContent='Too soon! Click to retry'}
 else{const ms=Math.round(performance.now()-t0);h=[...h,ms].slice(-5);s=0;p.className='';p.textContent=ms+' ms — click to go again';
 $('info').innerHTML=`${ms<200?'Lightning ⚡':ms<300?'Quick! 🚀':'Keep practicing 🙂'}<br>Best: ${Math.min(...h)} ms · Avg of last ${h.length}: ${Math.round(h.reduce((a,b)=>a+b)/h.length)} ms`}}</script>
-<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+<a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
