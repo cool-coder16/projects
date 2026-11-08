@@ -1,0 +1,31 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Julia — Fractal Explorer</title>
+<meta name="description" content="Steer a Julia set with your mouse and zoom into infinity.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23120626%27/><path d=%27M16 5c7 0 11 6 9 11s-7 5-7 1 4-4 3-7-6-4-9-1-2 9 3 12 11 2 12-3c-2 8-9 11-15 8S5 16 8 10s5-5 8-5z%27 fill=%27%23ff4fd8%27/></svg>">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#120626;font-family:system-ui,sans-serif;color:#fff}
+canvas{width:100%;height:100%;display:block;image-rendering:auto;cursor:crosshair}
+#hud{position:fixed;left:16px;top:16px;padding:12px 16px;background:#12062699;border:1px solid #fff3;border-radius:14px;backdrop-filter:blur(8px);font-size:13px;line-height:1.6}
+h1{margin:0 0 4px;font-weight:300;letter-spacing:.3em;font-size:18px}
+code{color:#ff9bea}
+</style></head><body>
+<canvas id="c"></canvas>
+<div id="hud"><h1>JULIA</h1>Move mouse: change the shape<br>Scroll: zoom · Drag: pan<br>Space: palette · M: Mandelbrot/Julia<br><code id="info"></code></div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),info=document.getElementById('info');
+const w=480,h=300;c.width=w;c.height=h;const img=x.createImageData(w,h);
+let cx=-.7,cy=.27,vx=0,vy=0,zoom=1.6,pal=0,mandel=0,drag=null,dirty=1;
+const hsl=(hh,s,l)=>{const a=s*Math.min(l,1-l),f=n=>{const k=(n+hh/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))))};return[f(0),f(8),f(4)]};
+const LUT=[];const mk=()=>{for(let i=0;i<256;i++)LUT[i]=hsl((i*3+pal*70)%360,.9,.15+.45*Math.sin(i/256*Math.PI))};mk();
+function draw(){const asp=w/h,it=120;let p=0;
+for(let j=0;j<h;j++)for(let i=0;i<w;i++){let zr=vx+(i/w-.5)*zoom*2*asp,zi=vy+(j/h-.5)*zoom*2,ar=mandel?zr:cx,ai=mandel?zi:cy,n=0;
+while(n<it&&zr*zr+zi*zi<16){const t=zr*zr-zi*zi+ar;zi=2*zr*zi+ai;zr=t;n++}
+const col=n==it?[0,0,0]:LUT[Math.floor((n+1-Math.log2(Math.log2(zr*zr+zi*zi)/2))*8)&255];
+img.data[p++]=col[0];img.data[p++]=col[1];img.data[p++]=col[2];img.data[p++]=255}
+x.putImageData(img,0,0);info.textContent=(mandel?'Mandelbrot':`c = ${cx.toFixed(3)} ${cy>=0?'+':'-'} ${Math.abs(cy).toFixed(3)}i`)+` · ${(1.6/zoom).toFixed(1)}×`}
+const pos=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
+c.onpointermove=e=>{const[u,v]=pos(e);if(drag){vx-=(u-drag[0])*zoom*2*w/h;vy-=(v-drag[1])*zoom*2;drag=[u,v]}else if(!mandel){cx=(u-.5)*3;cy=(v-.5)*2.4}dirty=1};
+c.onpointerdown=e=>{drag=pos(e);c.setPointerCapture(e.pointerId)};c.onpointerup=()=>drag=null;
+c.onwheel=e=>{e.preventDefault();zoom*=e.deltaY>0?1.12:.89;dirty=1};
+onkeydown=e=>{if(e.code=='Space'){e.preventDefault();pal++;mk()}if(e.key=='m'||e.key=='M'){mandel^=1;vx=mandel?-.5:0;vy=0;zoom=mandel?1.6:1.6}dirty=1};
+(function f(){if(dirty){dirty=0;draw()}requestAnimationFrame(f)})();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

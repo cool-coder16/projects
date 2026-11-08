@@ -15,4 +15,4 @@ $('uc').className='u'+(n>=ccost()?' ok':'');$('uc').innerHTML=`<span>👆 Strong
 U.forEach((u,i)=>{const e=$('u'+i);e.className='u'+(n>=cost(i)?' ok':'');e.innerHTML=`<span>${u[0]}<small>+${u[2]}/s each · owned ${own[i]}</small></span><b>${fm(cost(i))}</b>`})}
 $('big').onclick=e=>{n+=click;const f=document.createElement('div');f.className='f';f.textContent='+'+click;f.style.left=e.clientX-10+'px';f.style.top=e.clientY-20+'px';document.body.append(f);setTimeout(()=>f.remove(),800);ren()};
 setInterval(()=>{n+=ps()/10;ren()},100);setInterval(()=>{try{localStorage.setItem('fac',JSON.stringify({n,own,click}))}catch(e){}},3000);build();ren();</script>
-</body></html>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

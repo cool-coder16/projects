@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Binary Bulbs — Learn Binary</title>
+<meta name="description" content="Learn how computers count by flipping light bulbs.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23151a33%27/><circle cx=%2716%27 cy=%2714%27 r=%278%27 fill=%27%23ffd23f%27/><rect x=%2712%27 y=%2723%27 width=%278%27 height=%274%27 rx=%271%27 fill=%27%239aa5d6%27/></svg>">
+<style>
+:root{--on:#ffd23f}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#151a33;color:#e6e9ff;font-family:system-ui,sans-serif}
+main{width:min(94vw,720px);text-align:center;padding:20px 0}h1{margin:0;font-weight:800;letter-spacing:.1em;color:var(--on)}
+.sub{opacity:.7;margin:6px 0 20px}
+.bulbs{display:flex;gap:min(2vw,12px);justify-content:center}
+.b{flex:1;max-width:80px;cursor:pointer;user-select:none}
+.b i{display:block;aspect-ratio:1;border-radius:50%;background:#262d52;transition:.2s;border:3px solid #384075}
+.b.on i{background:var(--on);box-shadow:0 0 28px var(--on);border-color:#fff6}
+.b span{display:block;margin-top:8px;font-size:13px;opacity:.6}.b.on span{opacity:1;color:var(--on);font-weight:700}
+.b em{display:block;font-style:normal;font-size:20px;margin-top:4px}
+.card{background:#1f2548;border-radius:16px;padding:16px;margin:22px 0}
+#big{font-size:64px;font-weight:800}#sum{opacity:.7;min-height:22px}#ch{font-size:40px}
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+button{background:#384075;color:#fff;border:0;border-radius:20px;padding:8px 16px;cursor:pointer;font-weight:600}button.a{background:var(--on);color:#151a33}
+input{background:#151a33;color:#fff;border:2px solid #384075;border-radius:10px;padding:8px;font-size:16px;width:60%}
+#out{font-family:ui-monospace,monospace;word-break:break-all;margin-top:10px;line-height:1.7}
+.win{color:#6dff9a;font-weight:800}
+</style></head><body><main>
+<h1>BINARY BULBS</h1><p class="sub">Computers count with just two states: <b>off</b> and <b>on</b>. Tap the bulbs!</p>
+<div class="bulbs" id="bs"></div>
+<div class="card"><div id="big">0</div><div id="sum">Turn on a bulb — its number gets added up.</div><div id="ch"></div></div>
+<div class="tabs"><button id="t1" class="a">🎯 Challenge</button><button id="t2">✏️ Spell in binary</button></div>
+<div class="card" id="p1"><div id="q"></div><div class="sub">Score: <b id="s">0</b> · Streak: <b id="k">0</b></div><button id="skip">Skip</button></div>
+<div class="card" id="p2" style="display:none"><input id="nm" placeholder="Type a name…" maxlength="12" value="Hi"><div id="out"></div></div>
+</main><script>
+const $=id=>document.getElementById(id),bits=Array(8).fill(0),bs=$('bs');let target,score=0,streak=0,locked=0;
+for(let i=0;i<8;i++){const d=document.createElement('div');d.className='b';d.innerHTML=`<i></i><span>${128>>i}</span><em>0</em>`;d.onclick=()=>{bits[i]^=1;upd()};bs.append(d)}
+const val=()=>bits.reduce((a,b)=>a*2+b,0);
+function upd(){const v=val();[...bs.children].forEach((d,i)=>{d.classList.toggle('on',!!bits[i]);d.lastChild.textContent=bits[i]});
+$('big').textContent=v;const on=bits.map((b,i)=>b?128>>i:0).filter(Boolean);$('sum').textContent=on.length?on.join(' + ')+' = '+v:'Turn on a bulb — its number gets added up.';
+$('ch').textContent=v>=32&&v<127?`That's the letter "${String.fromCharCode(v)}" in text!`:'';
+if(!locked&&v==target){locked=1;streak++;score+=10*streak;$('s').textContent=score;$('k').textContent=streak;$('q').innerHTML='<span class="win">✓ Correct! Nice one!</span>';setTimeout(newQ,1100)}}
+function newQ(){locked=0;bits.fill(0);target=1+Math.floor(Math.random()*Math.min(255,20+score*2));$('q').innerHTML=`Make the number <b style="font-size:36px;color:var(--on)">${target}</b> with the bulbs`;upd()}
+$('skip').onclick=()=>{streak=0;$('k').textContent=0;newQ()};
+function tab(n){$('p1').style.display=n==1?'':'none';$('p2').style.display=n==2?'':'none';$('t1').className=n==1?'a':'';$('t2').className=n==2?'a':''}
+$('t1').onclick=()=>tab(1);$('t2').onclick=()=>tab(2);
+function spell(){$('out').innerHTML=[...$('nm').value].map(c=>`<b style="color:var(--on)">${c}</b> = ${c.charCodeAt(0)} = ${c.charCodeAt(0).toString(2).padStart(8,'0')}`).join('<br>')}
+$('nm').oninput=spell;spell();newQ();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

@@ -15,4 +15,4 @@ const v=erase?null:col;g[b*N+a]=v;if($('mi').checked)g[b*N+N-1-a]=v;draw()}
 c.oncontextmenu=e=>e.preventDefault();c.onpointerdown=e=>{dn=e.button==2||er;c.setPointerCapture(e.pointerId);put(e,dn)};c.onpointermove=e=>{if(dn!==null)put(e,dn)};c.onpointerup=()=>dn=null;
 let er=0;$('er').onclick=()=>{er^=1;$('er').textContent=er?'Eraser ON':'Eraser'};$('cl').onclick=()=>{g.fill(null);draw()};
 $('dl').onclick=()=>{const t=document.createElement('canvas');t.width=t.height=256;const q=t.getContext('2d');g.forEach((v,i)=>{if(v){q.fillStyle=v;q.fillRect((i%N)*16,Math.floor(i/N)*16,16,16)}});const a=document.createElement('a');a.href=t.toDataURL();a.download='pixel-art.png';a.click()};draw();</script>
-</body></html>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

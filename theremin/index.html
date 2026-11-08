@@ -15,4 +15,4 @@ c.onpointerdown=e=>{if(!o)start();o.type=$('wv').value;dn=1;pos(e);upd();c.setPo
 const hue=mx/640*300+120;if(an&&dn){const b=new Uint8Array(an.fftSize);an.getByteTimeDomainData(b);x.strokeStyle=`hsl(${hue},100%,65%)`;x.shadowColor=x.strokeStyle;x.shadowBlur=14;x.lineWidth=3;x.beginPath();for(let i=0;i<640;i++){const v=(b[Math.floor(i*512/640)]-128)/128;i?x.lineTo(i,170+v*140):x.moveTo(i,170+v*140)}x.stroke();x.shadowBlur=0}
 tr.push([mx,my]);if(tr.length>25)tr.shift();if(dn)tr.forEach(([a,b],i)=>{x.fillStyle=`hsla(${hue},100%,70%,${i/50})`;x.beginPath();x.arc(a,b,3+i*.6,0,7);x.fill()});
 x.fillStyle=dn?`hsl(${hue},100%,75%)`:'#fff6';x.beginPath();x.arc(mx,my,dn?14:6,0,7);x.fill();requestAnimationFrame(d)})();</script>
-</body></html>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

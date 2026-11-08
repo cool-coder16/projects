@@ -12,4 +12,4 @@ function reg(){const s=new Set([0]),q=[0];while(q.length){const i=q.pop(),X=i%N,
 function mv(k){if(over||k==g[0])return;const s=reg();s.forEach(i=>g[i]=k);left--;draw();if(g.every(v=>v==g[0])){over=1;$('msg').textContent=`🎉 Flooded with ${left} moves to spare!`}else if(!left){over=1;$('msg').textContent='Out of moves — try a new board!'}}
 function draw(){g.forEach((v,i)=>{x.fillStyle=C[v];x.beginPath();x.roundRect((i%N)*Z+1,Math.floor(i/N)*Z+1,Z-2,Z-2,6);x.fill()});x.strokeStyle='#fff';x.lineWidth=3;x.strokeRect(1,1,Z-2,Z-2);$('mv').textContent=left}
 $('nw').onclick=init;init();</script>
-</body></html>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

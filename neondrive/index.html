@@ -1,0 +1,85 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neon Drive — Synthwave Racer</title>
+<meta name="description" content="Race a neon highway into a synthwave sunset.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><defs><linearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%270%27 y2=%271%27><stop offset=%270%27 stop-color=%27%23ffe14d%27/><stop offset=%271%27 stop-color=%27%23ff2fa0%27/></linearGradient></defs><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231a0838%27/><circle cx=%2716%27 cy=%2714%27 r=%278.5%27 fill=%27url(%23g)%27/><path d=%27M0 18H32V32H0z%27 fill=%27%231a0838%27/><path d=%27M0 18H32M16 18L4 32M16 18L28 32M16 18V32%27 stroke=%27%2300e5ff%27 stroke-width=%271.6%27/></svg>">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0d0221;font-family:system-ui,sans-serif;color:#fff;touch-action:none;user-select:none}
+canvas{position:fixed;inset:0}
+#hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:16px 22px;font-weight:700;letter-spacing:.1em;text-shadow:0 0 12px #ff2fa0;pointer-events:none;font-size:clamp(14px,2.5vw,22px)}
+#bar{width:min(30vw,200px);height:8px;background:#ffffff22;border-radius:6px;margin-top:8px;overflow:hidden}#bf{height:100%;width:100%;background:linear-gradient(90deg,#00e5ff,#ff2fa0);box-shadow:0 0 12px #00e5ff}
+#ov{position:fixed;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none;text-shadow:0 0 30px #ff2fa0}
+#ov h1{margin:0;font-size:clamp(34px,9vw,92px);font-style:italic;letter-spacing:.08em;background:linear-gradient(#ffe14d,#ff2fa0);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 18px #ff2fa099)}
+#ov p{margin:10px 0 0;font-size:clamp(13px,2vw,18px);opacity:.85}
+</style></head><body><canvas id="c"></canvas>
+<div id="hud"><div>SCORE <span id="sc">0</span><div id="bar"><div id="bf"></div></div></div><div style="text-align:right"><span id="lv">♥♥♥</span><br><span id="ob" style="color:#00e5ff">◆ 0</span></div></div>
+<div id="ov"><div><h1 id="t">NEON DRIVE</h1><p id="s">Move mouse / ←→ to steer · collect ◆ · dodge the red gates<br>Hold click / Space to boost · M to mute · Click to start</p></div></div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),$=id=>document.getElementById(id);let W,H;
+const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight};rs();onresize=rs;
+const R=(a,b)=>a+Math.random()*(b-a);
+let st='idle',pos=0,sp=0,px=0,tx=0,boost=1,boosting=0,lives=3,orbs=0,obj=[],shake=0,flash=0,spawn=0,T=0,best=0,muted=0;
+const stars=[...Array(90)].map(()=>[Math.random(),Math.random()*.4,Math.random()*1.6]);
+const bld=[];for(let i=0,bx=-200;bx<2400;i++){const w=R(30,90);bld.push({x:bx,w,h:R(25,110),wn:[...Array(6)].map(()=>[R(.1,.8),R(.1,.9),Math.random()<.4])});bx+=w+R(0,10)}
+// ---- tiny synth: bass + arp + kick, started on first interaction
+let ac,step=0;const mf=m=>440*2**((m-69)/12);
+function tone(f,type,v,d,lp){const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain(),fl=ac.createBiquadFilter();o.type=type;o.frequency.value=f;fl.type='lowpass';fl.frequency.value=lp;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0008,t+d);o.connect(fl);fl.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d)}
+function music(){if(muted||st!='play')return;const b=[45,45,57,45,48,48,60,48,43,43,55,43,50,50,62,50][step%16],ch=[0,7,12,19];
+tone(mf(b),'sawtooth',.16,.2,600);tone(mf(b+12+ch[step%4]),'square',.035,.12,2500);
+if(step%4==0){const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.2)}
+step++}
+function blip(f){if(ac&&!muted)tone(f,'triangle',.12,.25,4000)}
+setInterval(()=>ac&&music(),136);
+// ---- game
+function start(){ac=ac||new AudioContext();st='play';pos=0;sp=.8;boost=1;lives=3;orbs=0;obj=[];px=tx=0;flash=0;$('ov').style.display='none';hud()}
+function over(){st='over';best=Math.max(best,score());$('t').textContent='CRASHED';$('s').innerHTML=`Score ${score()} · Best ${best}<br>Click or Space to drive again`;$('ov').style.display='grid'}
+const score=()=>Math.floor(pos/4)+orbs*100;
+function hud(){$('sc').textContent=score();$('lv').textContent='♥'.repeat(lives)+'♡'.repeat(3-lives);$('ob').textContent='◆ '+orbs;$('bf').style.width=boost*100+'%'}
+const P=z=>1/(1+z*.08),curve=()=>Math.sin(pos*.0031)+.6*Math.sin(pos*.0011);
+const cx=p=>W/2+curve()*(1-p)*(1-p)*W*.4,rw=p=>p*W*.42,hor=()=>H*.42;
+function lane(z,l){const p=P(z);return[cx(p)+l*rw(p)*.85,hor()+p*(H-hor()),p]}
+function spawnRow(){const l=R(-.85,.85);if(Math.random()<.35){for(let i=0;i<5;i++)obj.push({z:150+i*6,l:l+Math.sin(i)*.1,o:1})}else if(Math.random()<.6)obj.push({z:150,l,o:0,w:R(.3,.55)});else{obj.push({z:150,l:-.6,o:0,w:.35});obj.push({z:150,l:.6,o:0,w:.35});obj.push({z:150,l:0,o:1})}}
+function update(){T+=.016;const base=.8+Math.min(pos/9000,1.4);const bo=boosting&&boost>0&&st=='play';sp+=((bo?base*1.8:base)-sp)*.05;if(bo)boost=Math.max(0,boost-.004);
+if(st=='play'||st=='over'){pos+=sp}if(st!='play')return;
+px+=(tx-px)*.18;if(--spawn<=0){spawnRow();spawn=R(40,80)/(sp)}
+for(const o of obj){o.z-=sp;if(!o.d&&o.z<1.6&&o.z>-1){const hit=o.o?Math.abs(o.l-px)<.28:Math.abs(o.l-px)<o.w*.5+.08;if(hit){o.d=1;if(o.o){orbs++;boost=Math.min(1,boost+.12);blip(880+orbs%8*60);flash=.15}else{lives--;shake=22;flash=.6;sp*=.5;blip(80);if(lives<=0)over()}}}}
+obj=obj.filter(o=>o.z>-2&&!(o.d&&o.o)&&!(o.d&&!o.o&&o.z<-1));hud()}
+function draw(){x.save();if(shake>0){x.translate(R(-shake,shake)/3,R(-shake,shake)/3);shake--}
+const h=hor(),pl=(1-Math.min(1,0));
+let g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#0d0221');g.addColorStop(.6,'#3a0f6b');g.addColorStop(1,'#ff4f9a');x.fillStyle=g;x.fillRect(0,0,W,h+2);
+x.fillStyle='#fff';for(const s of stars){x.globalAlpha=.4+.5*Math.sin(T*2+s[0]*20);x.fillRect(s[0]*W,s[1]*H,s[2],s[2])}x.globalAlpha=1;
+// striped sun
+const sr=H*.2,sy=h-sr*.35,sx=W/2-curve()*18;for(let i=0;i<9;i++){x.save();x.beginPath();const y0=sy-sr+(i<4?i*sr*.45:sr*1.2+(i-4)*sr*.2);const hh=i<4?sr*.45:sr*.12+ (8-i)*0;x.rect(sx-sr,i<4?sy-sr+i*sr*.3:sy+sr*.05*(i-3)*(i-3)*.0+(i-4)*sr*.22,sr*2,i<4?sr*.3:sr*.15);x.clip();const sg=x.createLinearGradient(0,sy-sr,0,sy+sr);sg.addColorStop(0,'#ffe14d');sg.addColorStop(1,'#ff2fa0');x.fillStyle=sg;x.shadowColor='#ff2fa0';x.shadowBlur=60;x.beginPath();x.arc(sx,sy,sr,0,7);x.fill();x.restore()}
+// skyline
+const off=-curve()*60-200;x.fillStyle='#1b0640';for(const b of bld){const bx=b.x+off;if(bx<-100||bx>W)continue;x.fillRect(bx,h-b.h,b.w,b.h+1);x.fillStyle='#ff6fd8';for(const w of b.wn)if(w[2])x.fillRect(bx+w[0]*b.w,h-b.h+w[1]*b.h,2,3);x.fillStyle='#1b0640'}
+// road rows
+for(let y=Math.ceil(h);y<H;y++){const p=(y-h)/(H-h);if(p<.003)continue;const z=(1/p-1)/.08,s=Math.floor((z+pos)/5)%2,cxx=cx(p),r=rw(p);
+x.fillStyle=s?'#1a0840':'#240b52';x.fillRect(0,y,W,1);x.fillStyle=s?'#0e0420':'#150629';x.fillRect(cxx-r,y,r*2,1);
+x.fillStyle='#ff2fa0';const e=Math.max(1,p*9);x.fillRect(cxx-r-e,y,e,1);x.fillRect(cxx+r,y,e,1);
+if(s){x.fillStyle='#00e5ff';x.fillRect(cxx-p*3,y,p*6,1)}
+if(Math.floor((z+pos)/5)%6==0){x.fillStyle='#ff2fa066';x.fillRect(0,y,cxx-r-e,1);x.fillRect(cxx+r+e,y,W,1)}}
+// glow on horizon
+g=x.createLinearGradient(0,h-30,0,h+40);g.addColorStop(0,'transparent');g.addColorStop(.5,'#ff2fa055');g.addColorStop(1,'transparent');x.fillStyle=g;x.fillRect(0,h-30,W,70);
+// objects far->near
+x.globalCompositeOperation='lighter';
+for(const o of [...obj].sort((a,b)=>b.z-a.z)){if(o.z<0)continue;const[ox,oy,p]=lane(o.z,o.l);
+if(o.o){const r=26*p+2,q=x.createRadialGradient(ox,oy-r,0,ox,oy-r,r*2.2);q.addColorStop(0,'#fff');q.addColorStop(.3,'#00e5ff');q.addColorStop(1,'transparent');x.fillStyle=q;x.fillRect(ox-r*2.2,oy-r*3.2,r*4.4,r*4.4)}
+else{const w=o.w*rw(p)*.85,hh=110*p+3;x.strokeStyle='#ff1f4d';x.lineWidth=Math.max(1.5,6*p);x.shadowColor='#ff1f4d';x.shadowBlur=22*p;x.fillStyle='#ff1f4d33';x.fillRect(ox-w/2,oy-hh,w,hh);x.strokeRect(ox-w/2,oy-hh,w,hh);x.beginPath();x.moveTo(ox-w/2,oy-hh);x.lineTo(ox+w/2,oy);x.moveTo(ox+w/2,oy-hh);x.lineTo(ox-w/2,oy);x.stroke();x.shadowBlur=0}}
+// speed lines
+if(boosting&&boost>0&&st=='play'){x.strokeStyle='#ffffff55';x.lineWidth=1.5;for(let i=0;i<24;i++){const a=R(0,6.28),r1=R(.25,.5)*H,r2=r1+R(40,160);x.beginPath();x.moveTo(W/2+Math.cos(a)*r1,h+Math.sin(a)*r1*.7);x.lineTo(W/2+Math.cos(a)*r2,h+Math.sin(a)*r2*.7);x.stroke()}}
+x.globalCompositeOperation='source-over';
+// player ship
+if(st!='over'||1){const[sxp,syp]=lane(1.2,px),wob=Math.sin(T*8)*2,sc=W/900+.4;x.save();x.translate(sxp,H*.9+wob);x.scale(Math.min(sc,1.4),Math.min(sc,1.4));x.rotate((tx-px)*.25);
+x.shadowColor='#00e5ff';x.shadowBlur=26;x.fillStyle='#0b0320';x.strokeStyle='#00e5ff';x.lineWidth=3;x.beginPath();x.moveTo(0,-34);x.lineTo(34,16);x.lineTo(12,10);x.lineTo(0,20);x.lineTo(-12,10);x.lineTo(-34,16);x.closePath();x.fill();x.stroke();
+x.fillStyle=boosting&&boost>0?'#fff':'#ff2fa0';x.shadowColor='#ff2fa0';x.beginPath();x.moveTo(-8,18);x.lineTo(0,26+Math.random()*(boosting?30:10));x.lineTo(8,18);x.fill();x.restore()}
+x.restore();
+if(flash>0){x.fillStyle=`rgba(255,${lives>0&&flash<.2?255:60},120,${flash})`;x.fillRect(0,0,W,H);flash-=.03}
+// vignette
+g=x.createRadialGradient(W/2,H/2,H*.4,W/2,H/2,H*.95);g.addColorStop(0,'transparent');g.addColorStop(1,'#00000099');x.fillStyle=g;x.fillRect(0,0,W,H)}
+(function f(){update();draw();requestAnimationFrame(f)})();
+// ---- input
+const go=()=>{if(st!='play')start()};
+onpointermove=e=>{tx=Math.max(-1.1,Math.min(1.1,(e.clientX/W-.5)*2.6))};
+onpointerdown=e=>{go();boosting=1;onpointermove(e)};onpointerup=()=>boosting=0;
+const K={};onkeydown=e=>{if(e.code=='Space'){e.preventDefault();go();boosting=1}if(e.key=='m'||e.key=='M')muted^=1;
+if(e.key=='ArrowLeft'||e.key=='a')tx=Math.max(-1.1,tx-.3);if(e.key=='ArrowRight'||e.key=='d')tx=Math.min(1.1,tx+.3)};
+onkeyup=e=>{if(e.code=='Space')boosting=0};
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

@@ -19,4 +19,4 @@ for(let i=0;i<5;i++)if(res[i]=='X'){const j=left.indexOf(cur[i]);if(j>=0){res[i]
 [...rows[row].children].forEach((t,i)=>{t.className='t '+res[i];const b=document.querySelector(`#kb [data-k=${cur[i]}]`),o={G:3,Y:2,X:1};const p=b.className.match(/[GYX]/);if(!p||o[res[i]]>o[p[0]])b.className=res[i]});
 if(cur==w){done=1;$('msg').textContent='🎉 You got it in '+(row+1)+'!'}else if(++row==6){done=1;$('msg').textContent='The word was '+w.toUpperCase()}else{cur='';$('msg').textContent=''}}
 onkeydown=e=>{if(!e.metaKey&&!e.ctrlKey)key(e.key.length==1?e.key.toLowerCase():e.key)};$('nw').onclick=init;init();</script>
-</body></html>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laser Lab — Mirror Puzzle</title>
+<meta name="description" content="Rotate mirrors to guide the laser into the target.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23100808%27/><path d=%27M2 22H14L22 10H30%27 fill=%27none%27 stroke=%27%23ff2d4d%27 stroke-width=%273%27/><path d=%27M12 26L24 6%27 stroke=%27%23cfe8ff%27 stroke-width=%274%27 stroke-linecap=%27round%27/></svg>">
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#100808;color:#ffd5da;font-family:system-ui,sans-serif}
+main{text-align:center}h1{margin:0 0 6px;letter-spacing:.3em;font-weight:300;color:#ff2d4d;text-shadow:0 0 16px #ff2d4d}
+.s{display:flex;justify-content:space-between;width:min(92vw,512px);margin:0 auto 8px;font-size:15px}
+canvas{width:min(92vw,512px);aspect-ratio:1;border-radius:12px;border:1px solid #ff2d4d44;background:#160c0e;cursor:pointer}p{opacity:.5;font-size:13px}
+button{background:#ff2d4d;border:0;color:#fff;padding:8px 18px;border-radius:20px;font-weight:700;cursor:pointer;margin:0 4px}
+</style></head><body><main><h1>LASER LAB</h1>
+<div class="s"><span>Level <b id="lv">1</b></span><span>Moves <b id="mv">0</b> / par <b id="pr">0</b></span><span>Score <b id="sc">0</b></span></div>
+<canvas id="c" width="512" height="512"></canvas>
+<p>Click a mirror to flip it · Guide the beam into the glowing target ring<br><button id="rs">Reset level</button><button id="nw">New puzzle</button></p></main>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),$=id=>document.getElementById(id),N=8,Z=64;
+let level=1,score=0,moves=0,par=0,row,mir,target,solved=false,flash=0,start;
+// mirror[y][x]: 0 none, 1 '/', 2 '\\'
+function trace(){const path=[[-1,row]];let px=0,py=row,dx=1,dy=0,hits=0;
+for(let i=0;i<300;i++){path.push([px,py]);const m=mir[py][px];if(m){hits++;[dx,dy]=m==1?[-dy,-dx]:[dy,dx]}px+=dx;py+=dy;if(px<0||py<0||px>=N||py>=N){path.push([px,py]);return{path,hits,exit:`${px},${py}`}}}return{path,hits,exit:'loop'}}
+function gen(){let t;do{mir=[...Array(N)].map(()=>Array(N).fill(0));row=Math.floor(Math.random()*N);
+const k=Math.min(10+level*2,26);for(let i=0;i<k;i++)mir[Math.floor(Math.random()*N)][Math.floor(Math.random()*N)]=1+Math.floor(Math.random()*2);
+t=trace()}while(t.hits<Math.min(4+level,8)||t.path[t.path.length-1][0]==-1);
+target=t.exit;const ex=t.path[t.path.length-1];target={x:ex[0],y:ex[1]};start=mir.map(r=>[...r]);scramble()}
+function scramble(){let t;do{mir=start.map(r=>[...r]);par=0;for(let y=0;y<N;y++)for(let xx=0;xx<N;xx++)if(mir[y][xx]&&Math.random()<.5){mir[y][xx]=3-mir[y][xx];par++}t=trace()}while(par<2||ok(t));
+// keep a solved copy
+solvedCopy=start;moves=0;solved=false;$('lv').textContent=level;$('pr').textContent=par;$('mv').textContent=0;scr=mir.map(r=>[...r])}
+let solvedCopy,scr;
+const ok=t=>{const e=t.path[t.path.length-1];return e[0]==target.x&&e[1]==target.y};
+function draw(){x.clearRect(0,0,512,512);x.strokeStyle='#ffffff10';for(let i=0;i<=N;i++){x.beginPath();x.moveTo(i*Z,0);x.lineTo(i*Z,512);x.moveTo(0,i*Z);x.lineTo(512,i*Z);x.stroke()}
+const t=trace(),good=ok(t);
+// target ring (on the edge cell outside the grid, drawn at border)
+const tx=Math.max(0,Math.min(N-1,target.x))*Z+Z/2,ty=Math.max(0,Math.min(N-1,target.y))*Z+Z/2,ex=target.x<0?0:target.x>=N?512:tx,ey=target.y<0?0:target.y>=N?512:ty;
+const pulse=3*Math.sin(Date.now()/200);x.strokeStyle=good?'#6dff9a':'#ffd400';x.lineWidth=3;x.shadowColor=x.strokeStyle;x.shadowBlur=14;x.beginPath();x.arc(ex,ey,14+pulse,0,7);x.stroke();
+x.strokeStyle=good?'#6dff9a':'#ff2d4d';x.shadowColor=x.strokeStyle;x.lineWidth=3;x.beginPath();t.path.forEach((p,i)=>{const px=p[0]*Z+Z/2,py=p[1]*Z+Z/2;i?x.lineTo(px,py):x.moveTo(px,py)});
+x.stroke();x.shadowBlur=0;
+x.fillStyle='#ff2d4d';x.fillRect(0,row*Z+Z/2-9,10,18);
+for(let y=0;y<N;y++)for(let xx=0;xx<N;xx++){const m=mir[y][xx];if(!m)continue;x.strokeStyle='#cfe8ff';x.lineWidth=5;x.lineCap='round';x.shadowColor='#8cf';x.shadowBlur=8;x.beginPath();
+const l=xx*Z+10,r=xx*Z+Z-10,tp=y*Z+10,b=y*Z+Z-10;m==1?(x.moveTo(l,b),x.lineTo(r,tp)):(x.moveTo(l,tp),x.lineTo(r,b));x.stroke();x.shadowBlur=0}
+if(good&&!solved){solved=true;const g=Math.max(1,par*3-moves+10)*10;score+=g;$('sc').textContent=score;flash=1;setTimeout(()=>{level++;gen()},900)}
+if(solved){x.fillStyle='#6dff9a';x.font='bold 34px system-ui';x.textAlign='center';x.fillText('SOLVED!',256,40)}
+requestAnimationFrame(draw)}
+c.onpointerdown=e=>{if(solved)return;const r=c.getBoundingClientRect(),gx=Math.floor((e.clientX-r.left)/r.width*N),gy=Math.floor((e.clientY-r.top)/r.height*N);
+if(mir[gy]&&mir[gy][gx]){mir[gy][gx]=3-mir[gy][gx];moves++;$('mv').textContent=moves}};
+$('rs').onclick=()=>{mir=scr.map(r=>[...r]);moves=0;$('mv').textContent=0};$('nw').onclick=()=>gen();
+gen();draw();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

@@ -17,4 +17,4 @@ if(g[i].f)return;if(g[i].m){over=1;clearInterval(tm);g.forEach(c=>{if(c.m)c.o=1}
 if(!over&&g.every(c=>c.m||c.o)){over=1;clearInterval(tm);$('msg').textContent='🎉 Cleared in '+$('t').textContent+'s!'}draw()}
 function draw(){g.forEach((c,i)=>{const e=$('bd').children[i];e.className='c'+(c.o?' o':'')+(c.x?' x':'');e.textContent=c.o?(c.m?'💣':c.n||''):c.f?'🚩':'';e.style.color=COL[c.n]||'#fff'});$('f').textContent=g.filter(c=>c.f).length}
 $('fm').onclick=()=>{fm^=1;$('fm').textContent='Flag mode: '+(fm?'ON':'off')};$('nw').onclick=init;init();</script>
-</body></html>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

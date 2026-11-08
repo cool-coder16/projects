@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Deep Blue — Living Ocean</title>
+<meta name="description" content="A living ocean you can feed, scare, and dive into.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23062a52%27/><ellipse cx=%2715%27 cy=%2716%27 rx=%279%27 ry=%275.5%27 fill=%27%23ff9a3c%27/><path d=%27M22 16l7-6v12z%27 fill=%27%23ff9a3c%27/><circle cx=%2711%27 cy=%2714.5%27 r=%271.4%27 fill=%27%23062a52%27/></svg>">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#02030f;font-family:system-ui,sans-serif;color:#e8f8ff;touch-action:none;user-select:none}
+canvas{position:fixed;inset:0}
+#hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:18px 22px;pointer-events:none;text-shadow:0 2px 12px #0008}
+h1{margin:0;font-weight:200;letter-spacing:.45em;font-size:clamp(18px,3.5vw,30px)}#hud small{opacity:.7;display:block;margin-top:6px;letter-spacing:.05em}
+#stat{text-align:right;font-size:14px}#stat b{font-size:26px;display:block}
+#ctl{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;padding:10px 18px;background:#0a1e3a66;border:1px solid #fff2;border-radius:40px;backdrop-filter:blur(10px);font-size:13px}
+input{accent-color:#4fe3ff;width:min(30vw,180px)}button{background:#ffffff22;border:0;color:#fff;padding:7px 14px;border-radius:18px;cursor:pointer;font-weight:600}button:hover{background:#ffffff44}
+#toast{position:fixed;top:90px;left:50%;transform:translateX(-50%);font-size:22px;font-weight:300;letter-spacing:.2em;opacity:0;transition:opacity .8s;text-shadow:0 0 20px #4fe3ff;pointer-events:none;text-align:center}
+</style></head><body><canvas id="c"></canvas>
+<div id="hud"><div><h1>DEEP BLUE</h1><small>Click to feed · Move to scare · Dive with the slider</small></div><div id="stat">Fish fed<b id="fed">0</b></div></div>
+<div id="toast"></div>
+<div id="ctl"><span>☀️</span><input id="dp" type="range" min="0" max="100" value="15"><span>🌑</span><button id="wh">🐋 Summon whale</button></div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),$=id=>document.getElementById(id);let W,H;
+const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight};rs();onresize=rs;
+let depth=.15,T=0,fed=0,mx=-999,my=-999,food=[],bub=[],whale=null,seen={};
+const R=(a,b)=>a+Math.random()*(b-a),mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',');
+const fish=[...Array(130)].map((_,i)=>({x:R(0,W),y:R(0,H),vx:R(-1,1),vy:R(-.5,.5),h:[18,32,175,195,55][i%5]+R(-8,8),s:R(.7,1.4),id:R(0,9)}));
+const jel=[...Array(6)].map(()=>({x:R(0,W),y:R(0,H),s:R(26,50),p:R(0,9),h:R(280,330)}));
+const snow=[...Array(90)].map(()=>({x:R(0,W),y:R(0,H),r:R(.6,2),v:R(.1,.5)}));
+function toast(t){const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.opacity=0,2200)}
+function once(k,t){if(!seen[k]){seen[k]=1;toast(t)}}
+$('dp').oninput=e=>{depth=e.target.value/100;if(depth>.9)once('ab','THE ABYSS')};
+onwheel=e=>{depth=Math.max(0,Math.min(1,depth+e.deltaY/2500));$('dp').value=depth*100};
+$('wh').onclick=()=>{if(!whale){whale={x:-450,y:H*R(.25,.5),d:1};once('wh','A GIANT PASSES')}};
+onpointermove=e=>{mx=e.clientX;my=e.clientY};onpointerleave=()=>mx=-999;
+onpointerdown=e=>{if(e.target.closest('#ctl'))return;mx=e.clientX;my=e.clientY;for(let i=0;i<6;i++)food.push({x:mx+R(-18,18),y:my+R(-10,10),v:R(.4,.9)})};
+function bubble(px,py,n){for(let i=0;i<n;i++)bub.push({x:px+R(-8,8),y:py,r:R(1.5,5),v:R(.6,1.8),w:R(0,9)})}
+function upd(f){let cx=0,cy=0,ax=0,ay=0,sx=0,sy=0,n=0;
+for(const o of fish){if(o===f)continue;const dx=o.x-f.x,dy=o.y-f.y,d=dx*dx+dy*dy;if(d<3600){n++;cx+=o.x;cy+=o.y;ax+=o.vx;ay+=o.vy;if(d<324){sx-=dx;sy-=dy}}}
+if(n){f.vx+=((cx/n-f.x)*.0006+(ax/n-f.vx)*.04+sx*.004);f.vy+=((cy/n-f.y)*.0006+(ay/n-f.vy)*.04+sy*.004)}
+let sp=2.2;const dm=Math.hypot(f.x-mx,f.y-my)+.01;if(dm<140){f.vx+=(f.x-mx)/dm*.35;f.vy+=(f.y-my)/dm*.35;sp=4}
+if(whale){const dw=Math.hypot(f.x-whale.x,f.y-whale.y)+.01;if(dw<260){f.vx+=(f.x-whale.x)/dw*.3;f.vy+=(f.y-whale.y)/dw*.3;sp=3.5}}
+let best=null,bd=260;for(const p of food){const d=Math.hypot(p.x-f.x,p.y-f.y)+.01;if(d<bd){bd=d;best=p}}
+if(best){f.vx+=(best.x-f.x)/bd*.15;f.vy+=(best.y-f.y)/bd*.15;if(bd<10){food.splice(food.indexOf(best),1);fed++;$('fed').textContent=fed;bubble(f.x,f.y,3);if(fed==5)toast('HUNGRY LITTLE ONES');if(fed==30)toast('FEEDING FRENZY');if(fed==100)toast('OCEAN KEEPER ★')}}
+if(f.x<60)f.vx+=.1;if(f.x>W-60)f.vx-=.1;if(f.y<80)f.vy+=.1;if(f.y>H-60)f.vy-=.1;
+const v=Math.hypot(f.vx,f.vy);if(v>sp){f.vx*=sp/v;f.vy*=sp/v}if(v<.8){f.vx*=1.1;f.vy+=.02}
+f.x+=f.vx;f.y+=f.vy}
+function drawFish(f){const a=Math.atan2(f.vy,f.vx),L=11*f.s,B=4.6*f.s,w=Math.sin(T*9+f.id)*.5;
+x.save();x.translate(f.x,f.y);x.rotate(a);if(Math.abs(a)>1.57)x.scale(1,-1);
+const l=58-depth*12;x.fillStyle=`hsl(${f.h},85%,${l}%)`;x.beginPath();x.ellipse(0,0,L,B,0,0,7);x.fill();
+x.beginPath();x.moveTo(-L*.8,0);x.lineTo(-L*1.7,-B*(.9+w));x.lineTo(-L*1.7,B*(.9-w));x.fill();
+x.fillStyle=`hsla(${f.h+30},90%,80%,.6)`;x.beginPath();x.ellipse(L*.1,-B*.3,L*.5,B*.25,0,0,7);x.fill();
+x.fillStyle='#021';x.beginPath();x.arc(L*.55,-B*.2,1.2*f.s,0,7);x.fill();x.restore()}
+function drawJelly(j){j.p+=.03;const pu=Math.sin(j.p),w=j.s*(1+.14*pu),g=.35+depth*.65;j.y+=-pu*.5-.05;j.x+=Math.sin(j.p*.3)*.3;if(j.y<-100)j.y=H+150;if(j.y>H+200)j.y=-90;
+x.save();x.translate(j.x,j.y);x.globalCompositeOperation='lighter';
+for(let i=-3;i<=3;i++){x.strokeStyle=`hsla(${j.h},90%,70%,${.35*g})`;x.lineWidth=1.6;x.beginPath();x.moveTo(i*w*.28,0);for(let k=1;k<=12;k++)x.lineTo(i*w*.28+Math.sin(k*.6-T*3+i)*7*k/6,k*j.s*.2);x.stroke()}
+const q=x.createRadialGradient(0,-w*.2,w*.1,0,0,w*1.1);q.addColorStop(0,`hsla(${j.h},95%,80%,${.75*g})`);q.addColorStop(1,`hsla(${j.h},90%,50%,${.12*g})`);
+x.fillStyle=q;x.shadowColor=`hsl(${j.h},100%,60%)`;x.shadowBlur=30*g;x.beginPath();x.ellipse(0,0,w,w*(.75-.12*pu),0,Math.PI,0);x.fill();x.restore()}
+function drawWhale(){const d=whale,s=1;whale.x+=1.1;const a=.5+Math.sin(T)*.1;x.save();x.translate(d.x,d.y);x.fillStyle=`rgba(${mix([12,40,70],[2,6,20],depth)},.75)`;
+x.beginPath();x.moveTo(230,0);x.bezierCurveTo(200,-70,40,-80,-120,-30);x.bezierCurveTo(-190,-10,-230,-20,-290,-60+Math.sin(T*1.5)*18);x.bezierCurveTo(-250,0,-250,10,-295,60+Math.sin(T*1.5)*18);x.bezierCurveTo(-220,25,-170,20,-120,28);x.bezierCurveTo(30,90,190,70,230,0);x.fill();
+x.beginPath();x.moveTo(40,40);x.lineTo(-40,110+a*10);x.lineTo(-20,40);x.fill();
+x.fillStyle=`rgba(120,220,255,${.08+depth*.4})`;for(let i=0;i<14;i++){x.beginPath();x.arc(150-i*22,38+Math.sin(i)*4,2.5,0,7);x.fill()}
+x.restore();if(d.x>W+420)whale=null}
+function frame(){T+=.016;
+const top=mix([40,175,215],[2,5,20],depth),bot=mix([6,62,115],[1,2,10],depth);const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,`rgb(${top})`);g.addColorStop(1,`rgb(${bot})`);x.fillStyle=g;x.fillRect(0,0,W,H);
+x.globalCompositeOperation='lighter';
+for(let i=0;i<7;i++){const bx=(i+.5)/7*W+Math.sin(T*.4+i)*60,wd=40+30*Math.sin(T*.3+i*2);x.fillStyle=`rgba(180,240,255,${.07*(1-depth)})`;x.beginPath();x.moveTo(bx-wd/2,0);x.lineTo(bx+wd/2,0);x.lineTo(bx+wd*2+Math.sin(T+i)*80,H);x.lineTo(bx-wd*2+Math.sin(T+i)*80,H);x.fill()}
+for(const s of snow){s.y+=s.v;s.x+=Math.sin(T+s.r*9)*.2;if(s.y>H)s.y=-5;x.fillStyle=`rgba(190,235,255,${.25+depth*.3})`;x.fillRect(s.x,s.y,s.r,s.r)}
+x.globalCompositeOperation='source-over';
+if(whale)drawWhale();
+jel.forEach(drawJelly);x.globalCompositeOperation='source-over';
+fish.forEach(upd);fish.forEach(drawFish);
+x.fillStyle='#ffe9a8';for(const p of food){p.y+=p.v;p.x+=Math.sin(T*3+p.y*.05)*.3;x.beginPath();x.arc(p.x,p.y,2.6,0,7);x.fill()}food=food.filter(p=>p.y<H+10);
+x.strokeStyle='rgba(255,255,255,.45)';x.lineWidth=1;for(const b of bub){b.y-=b.v;b.x+=Math.sin(T*3+b.w)*.4;x.beginPath();x.arc(b.x,b.y,b.r,0,7);x.stroke()}bub=bub.filter(b=>b.y>-10);
+if(Math.random()<.05)bubble(R(0,W),H+5,1);
+if(depth>.5){const v=x.createRadialGradient(W/2,H/2,H*.3,W/2,H/2,H);v.addColorStop(0,'transparent');v.addColorStop(1,`rgba(0,0,8,${(depth-.5)*.9})`);x.fillStyle=v;x.fillRect(0,0,W,H)}
+requestAnimationFrame(frame)}frame();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

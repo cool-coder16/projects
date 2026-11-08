@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Beatbox — Step Sequencer</title>
+<meta name="description" content="Build a beat in your browser.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23111%27/><rect x=%274%27 y=%274%27 width=%276%27 height=%276%27 rx=%271%27 fill=%27%23ffb400%27/><rect x=%2713%27 y=%2713%27 width=%276%27 height=%276%27 rx=%271%27 fill=%27%23ff3d71%27/><rect x=%2722%27 y=%2722%27 width=%276%27 height=%276%27 rx=%271%27 fill=%27%2300e5ff%27/><rect x=%274%27 y=%2722%27 width=%276%27 height=%276%27 rx=%271%27 fill=%27%23333%27/><rect x=%2722%27 y=%274%27 width=%276%27 height=%276%27 rx=%271%27 fill=%27%23333%27/></svg>">
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0d0d12;color:#eee;font-family:system-ui,sans-serif}
+main{width:min(94vw,760px)}h1{font-weight:800;letter-spacing:.2em;margin:0 0 4px}
+.sub{opacity:.5;margin:0 0 20px;font-size:14px}
+.row{display:grid;grid-template-columns:70px repeat(16,1fr);gap:5px;margin-bottom:6px;align-items:center}
+.row span{font-size:12px;opacity:.7}
+.p{aspect-ratio:1;border-radius:6px;background:#1c1c26;border:0;cursor:pointer;transition:.1s}
+.p:nth-child(4n+2){background:#242433}
+.p.on{background:var(--c);box-shadow:0 0 14px var(--c)}
+.p.now{outline:2px solid #fff;transform:scale(1.12)}
+.ctl{display:flex;gap:14px;align-items:center;margin-top:20px;flex-wrap:wrap}
+button.b{background:#fff;color:#000;border:0;padding:10px 22px;border-radius:30px;font-weight:700;cursor:pointer}
+input{accent-color:#ff3d71}
+</style></head><body><main>
+<h1>BEATBOX</h1><p class="sub">Click the pads to program a loop · press Space to play</p>
+<div id="g"></div>
+<div class="ctl"><button class="b" id="play">▶ Play</button><label>Tempo <input id="bpm" type="range" min="60" max="180" value="110"> <b id="bv">110</b></label><button class="b" id="rnd" style="background:#333;color:#fff">🎲 Random</button><button class="b" id="clr" style="background:#333;color:#fff">Clear</button></div>
+</main><script>
+const names=['Kick','Snare','Hat','Clap'],cols=['#ffb400','#ff3d71','#00e5ff','#a66bff'];
+const S=names.map(()=>Array(16).fill(0)),pads=[];
+[[0,4,8,12],[4,12],[2,6,10,14],[]].forEach((a,r)=>a.forEach(i=>S[r][i]=1));
+const g=document.getElementById('g');
+names.forEach((n,r)=>{const row=document.createElement('div');row.className='row';row.style.setProperty('--c',cols[r]);row.innerHTML=`<span>${n}</span>`;pads[r]=[];
+for(let i=0;i<16;i++){const b=document.createElement('button');b.className='p'+(S[r][i]?' on':'');b.onclick=()=>{S[r][i]^=1;b.classList.toggle('on');if(S[r][i])hit(r,0)};pads[r][i]=b;row.append(b)}g.append(row)});
+let ac,step=0,timer=null;
+function hit(r,t){ac=ac||new AudioContext();t=t||ac.currentTime;const o=ac.createOscillator(),v=ac.createGain();o.connect(v);v.connect(ac.destination);
+if(r==0){o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);v.gain.setValueAtTime(1,t);v.gain.exponentialRampToValueAtTime(.001,t+.3);o.start(t);o.stop(t+.3)}
+else{const len=ac.sampleRate*.2,buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+const s=ac.createBufferSource(),f=ac.createBiquadFilter();s.buffer=buf;f.type='highpass';f.frequency.value=[0,1800,7000,1200][r];s.connect(f);f.connect(v);
+const dur=[0,.18,.05,.12][r];v.gain.setValueAtTime(.7,t);v.gain.exponentialRampToValueAtTime(.001,t+dur);s.start(t);s.stop(t+dur)}}
+function tick(){pads.forEach((r,ri)=>{r.forEach(b=>b.classList.remove('now'));r[step].classList.add('now');if(S[ri][step])hit(ri)});step=(step+1)%16}
+const play=document.getElementById('play'),bpm=document.getElementById('bpm');
+function toggle(){if(timer){clearInterval(timer);timer=null;play.textContent='▶ Play';pads.forEach(r=>r.forEach(b=>b.classList.remove('now')));step=0}else{start();play.textContent='■ Stop'}}
+function start(){clearInterval(timer);timer=setInterval(tick,60000/bpm.value/4)}
+play.onclick=toggle;bpm.oninput=()=>{document.getElementById('bv').textContent=bpm.value;if(timer)start()};
+onkeydown=e=>{if(e.code=='Space'){e.preventDefault();toggle()}};
+const sync=()=>S.forEach((r,ri)=>r.forEach((v,i)=>pads[ri][i].classList.toggle('on',!!v)));
+document.getElementById('rnd').onclick=()=>{S.forEach((r,ri)=>r.forEach((_,i)=>r[i]=Math.random()<[.3,.2,.5,.15][ri]?1:0));sync()};
+document.getElementById('clr').onclick=()=>{S.forEach(r=>r.fill(0));sync()};
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

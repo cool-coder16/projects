@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aurora — Sky Painter</title>
+<meta name="description" content="Paint the northern lights with your cursor.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23071426%27/><path d=%27M0 22C8 6 14 26 32 8V32H0Z%27 fill=%27%2339f2b0%27 opacity=%27.8%27/><path d=%27M0 26C10 12 20 30 32 16V32H0Z%27 fill=%27%23a66bff%27 opacity=%27.8%27/></svg>">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#030914;font-family:system-ui,sans-serif;color:#dff}
+canvas{position:fixed;inset:0;cursor:crosshair}
+header{position:fixed;top:0;left:0;right:0;text-align:center;padding:28px 16px;pointer-events:none}
+h1{margin:0;font-weight:200;letter-spacing:.5em;font-size:clamp(20px,4vw,38px);text-shadow:0 0 30px #39f2b0}
+p{margin:8px 0 0;opacity:.6;font-size:14px}
+#bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;padding:10px 14px;background:#0b1a3355;border:1px solid #fff2;border-radius:40px;backdrop-filter:blur(10px)}
+button{border:0;width:30px;height:30px;border-radius:50%;cursor:pointer;transition:.2s}button:hover{transform:scale(1.25)}
+button.t{width:auto;padding:0 14px;border-radius:15px;background:#fff2;color:#dff;font-size:13px}
+</style></head><body>
+<canvas id="c"></canvas>
+<header><h1>AURORA</h1><p>Drag across the sky to paint light · click to cast a shooting star</p></header>
+<div id="bar"></div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),bar=document.getElementById('bar');
+let W,H,hue=150,down=0,auto=1,stars=[],bits=[],shoot=[];
+const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight;stars=[...Array(220)].map(()=>({x:Math.random()*W,y:Math.random()*H*.8,r:Math.random()*1.4,p:Math.random()*9}))};rs();onresize=rs;
+[150,190,270,320,40].forEach(h=>{const b=document.createElement('button');b.style.background=`hsl(${h},90%,60%)`;b.onclick=()=>{hue=h;auto=0};bar.append(b)});
+const t=document.createElement('button');t.className='t';t.textContent='Auto-rainbow';t.onclick=()=>auto=1;bar.append(t);
+const add=(px,py)=>{if(bits.length>250)return;for(let i=0;i<2;i++)bits.push({x:px+(Math.random()-.5)*20,y:py,vy:(Math.random()-.5)*.6,vx:(Math.random()-.5)*.8,l:1,h:hue+Math.random()*40,s:20+Math.random()*50})};
+onpointerdown=e=>{down=1;shoot.push({x:e.clientX,y:e.clientY,vx:9,vy:4,l:1})};onpointerup=()=>down=0;
+onpointermove=e=>{if(down||e.pointerType=='mouse'&&e.buttons)add(e.clientX,e.clientY);else if(!e.buttons&&e.pointerType=='mouse'&&Math.random()<.3)add(e.clientX,e.clientY)};
+let T=0;
+(function f(){T+=.01;if(auto)hue=(hue+.3)%360;
+const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#030914');g.addColorStop(1,'#0b1f3a');x.globalCompositeOperation='source-over';x.fillStyle=g;x.fillRect(0,0,W,H);
+for(const s of stars){x.fillStyle=`rgba(255,255,255,${.4+.6*Math.sin(T*3+s.p)**2})`;x.fillRect(s.x,s.y,s.r,s.r)}
+x.globalCompositeOperation='lighter';
+// ambient curtains
+for(let k=0;k<3;k++){x.beginPath();x.moveTo(0,H);for(let i=0;i<=W;i+=20){x.lineTo(i,H*.45+Math.sin(i*.004+T+k*2)*70+Math.sin(i*.011-T*1.5)*30+k*40)}x.lineTo(W,H);
+const q=x.createLinearGradient(0,H*.3,0,H);q.addColorStop(0,`hsla(${hue+k*50},90%,60%,.28)`);q.addColorStop(1,'transparent');x.fillStyle=q;x.fill()}
+for(const b of bits){b.x+=b.vx+Math.sin(T*4+b.y*.02);b.y+=b.vy-.4;b.l-=.012;if(b.l<=0)continue;const r=b.s*b.l;
+const q=x.createRadialGradient(b.x,b.y,0,b.x,b.y,r);q.addColorStop(0,`hsla(${b.h},95%,65%,${b.l*.5})`);q.addColorStop(1,'transparent');x.fillStyle=q;x.fillRect(b.x-r,b.y-r,2*r,2*r)}
+bits=bits.filter(b=>b.l>0);
+for(const s of shoot){s.x+=s.vx;s.y+=s.vy;s.l-=.012;x.strokeStyle=`rgba(255,255,255,${s.l})`;x.lineWidth=2;x.beginPath();x.moveTo(s.x,s.y);x.lineTo(s.x-s.vx*8,s.y-s.vy*8);x.stroke()}
+shoot=shoot.filter(s=>s.l>0);
+requestAnimationFrame(f)})();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Slingshot — Gravity Game</title>
+<meta name="description" content="Bend your shot around planets to reach the portal.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23060818%27/><circle cx=%2713%27 cy=%2719%27 r=%276%27 fill=%27%23ff8a3d%27/><path d=%27M3 9C12 2 26 6 28 14%27 fill=%27none%27 stroke=%27%2370e0ff%27 stroke-width=%272.5%27 stroke-dasharray=%273 3%27/><circle cx=%2727%27 cy=%2716%27 r=%273%27 fill=%27%2370e0ff%27/></svg>">
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#060818;color:#cfe;font-family:system-ui,sans-serif;touch-action:none}
+main{text-align:center}h1{margin:0 0 6px;letter-spacing:.35em;font-weight:300;color:#70e0ff;text-shadow:0 0 16px #70e0ff}
+.s{display:flex;justify-content:space-between;width:min(94vw,800px);margin:0 auto 8px;font-size:15px}
+canvas{width:min(94vw,800px);border-radius:14px;border:1px solid #70e0ff44;background:#0a0d24;cursor:crosshair}p{opacity:.5;font-size:13px}
+</style></head><body><main><h1>SLINGSHOT</h1>
+<div class="s"><span>Level <b id="lv">1</b></span><span>Shots <b id="sh">0</b></span><span>Total <b id="tt">0</b></span></div>
+<canvas id="c" width="800" height="500"></canvas>
+<p>Drag back from the ship and release · Planets pull your shot · Reach the portal · R = new layout</p></main>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),$=id=>document.getElementById(id);
+let level=1,shots=0,total=0,ship,portal,wells,probe=null,msg='',msgT=0,aim=null,stars=[...Array(90)].map(()=>[Math.random()*800,Math.random()*500,Math.random()*1.5]);
+const D=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function gen(){ship={x:60,y:80+Math.random()*340};portal={x:740,y:60+Math.random()*380,r:20};wells=[];
+const n=Math.min(2+Math.floor(level/2),6);let tries=0;
+while(wells.length<n&&tries++<400){const r=16+Math.random()*16,w={x:200+Math.random()*420,y:40+Math.random()*420,r,m:r*r*(Math.random()<.2?-1:1)};
+if([ship,portal,...wells].every(o=>D(o,w)>w.r+(o.r||0)+70))wells.push(w)}
+probe=null;shots=0;$('lv').textContent=level;$('sh').textContent=0}
+function acc(p){let ax=0,ay=0;for(const w of wells){const dx=w.x-p.x,dy=w.y-p.y,d2=dx*dx+dy*dy,d=Math.sqrt(d2);const a=2*w.m/Math.max(d2,400);ax+=a*dx/d;ay+=a*dy/d}return[ax,ay]}
+function stepP(p){for(let i=0;i<2;i++){const[ax,ay]=acc(p);p.vx+=ax*.5;p.vy+=ay*.5;p.x+=p.vx*.5;p.y+=p.vy*.5}
+if(wells.some(w=>D(p,w)<w.r))return'crash';if(D(p,portal)<portal.r)return'win';if(p.x<-20||p.x>820||p.y<-20||p.y>520)return'lost';return''}
+function launch(vx,vy){if(probe)return;probe={x:ship.x,y:ship.y,vx,vy,trail:[],age:0};shots++;$('sh').textContent=shots}
+function say(t){msg=t;msgT=70}
+function frame(){x.clearRect(0,0,800,500);x.fillStyle='#ffffffaa';stars.forEach(s=>x.fillRect(s[0],s[1],s[2],s[2]));
+for(const w of wells){const col=w.m>0?'#ff8a3d':'#b36bff';const g=x.createRadialGradient(w.x,w.y,w.r*.3,w.x,w.y,w.r*2.6);g.addColorStop(0,col+'55');g.addColorStop(1,'transparent');x.fillStyle=g;x.beginPath();x.arc(w.x,w.y,w.r*2.6,0,7);x.fill();
+x.fillStyle=col;x.shadowColor=col;x.shadowBlur=18;x.beginPath();x.arc(w.x,w.y,w.r,0,7);x.fill();x.shadowBlur=0}
+const t=Date.now()/300;x.strokeStyle='#70e0ff';x.lineWidth=3;x.shadowColor='#70e0ff';x.shadowBlur=18;for(let i=0;i<3;i++){x.beginPath();x.arc(portal.x,portal.y,portal.r-i*6+Math.sin(t+i)*2,0,7);x.stroke()}x.shadowBlur=0;
+x.fillStyle='#fff';x.beginPath();x.arc(ship.x,ship.y,7,0,7);x.fill();
+if(aim&&!probe){const vx=(ship.x-aim.x)*.1,vy=(ship.y-aim.y)*.1,p={x:ship.x,y:ship.y,vx,vy};x.fillStyle='#fff9';for(let i=0;i<140;i++){if(stepP(p))break;if(i%4==0){x.beginPath();x.arc(p.x,p.y,1.6,0,7);x.fill()}}
+x.strokeStyle='#fff4';x.lineWidth=1;x.beginPath();x.moveTo(ship.x,ship.y);x.lineTo(aim.x,aim.y);x.stroke()}
+if(probe){const r=stepP(probe);probe.trail.push([probe.x,probe.y]);if(probe.trail.length>140)probe.trail.shift();probe.age++;
+x.strokeStyle='#ffd966';x.lineWidth=2;x.beginPath();probe.trail.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.stroke();x.fillStyle='#ffd966';x.beginPath();x.arc(probe.x,probe.y,5,0,7);x.fill();
+if(r=='win'){total+=Math.max(10-shots,1)*10;$('tt').textContent=total;say('Level cleared! +'+Math.max(10-shots,1)*10);level++;gen()}
+else if(r||probe.age>900){say(r=='crash'?'Crashed!':'Lost in space');probe=null}}
+if(msgT>0){msgT--;x.fillStyle='#fff';x.font='bold 28px system-ui';x.textAlign='center';x.globalAlpha=Math.min(1,msgT/30);x.fillText(msg,400,60);x.globalAlpha=1}
+requestAnimationFrame(frame)}
+const pt=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*800/r.width,y:(e.clientY-r.top)*500/r.height}};
+c.onpointerdown=e=>{if(!probe){aim=pt(e);c.setPointerCapture(e.pointerId)}};
+c.onpointermove=e=>{if(aim)aim=pt(e)};
+c.onpointerup=e=>{if(!aim)return;const a=pt(e),vx=(ship.x-a.x)*.1,vy=(ship.y-a.y)*.1;aim=null;if(Math.hypot(vx,vy)>.5)launch(vx,vy)};
+onkeydown=e=>{if(e.key=='r'||e.key=='R'){gen()}};
+gen();frame();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

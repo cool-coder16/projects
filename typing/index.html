@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Keyflow — Typing Test</title>
+<meta name="description" content="A 30-second typing speed test with live WPM.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231a1b26%27/><rect x=%274%27 y=%279%27 width=%2724%27 height=%2714%27 rx=%273%27 fill=%27none%27 stroke=%27%237aa2f7%27 stroke-width=%272%27/><path d=%27M8 14h2m3 0h2m3 0h2m3 0h2M10 18h12%27 stroke=%27%23bb9af7%27 stroke-width=%272%27 stroke-linecap=%27round%27/></svg>">
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1a1b26;color:#a9b1d6;font-family:ui-monospace,Menlo,monospace}
+main{width:min(92vw,820px)}h1{color:#7aa2f7;letter-spacing:.2em;margin:0 0 24px;font-weight:600}
+.stats{display:flex;gap:28px;margin-bottom:20px;font-size:14px}.stats b{display:block;font-size:34px;color:#c0caf5}
+#bar{height:4px;background:#2a2e45;border-radius:4px;margin-bottom:22px}#fill{height:100%;width:100%;background:linear-gradient(90deg,#7aa2f7,#bb9af7);border-radius:4px;transition:width .25s linear}
+#text{font-size:24px;line-height:1.8;user-select:none;filter:blur(0)}#text span{transition:color .1s}
+.ok{color:#9ece6a}.bad{color:#f7768e;background:#f7768e22;border-radius:3px}.cur{border-left:2px solid #7aa2f7;margin-left:-2px;animation:b 1s infinite}
+@keyframes b{50%{border-color:transparent}}
+#res{display:none;text-align:center;margin-top:20px}#res.show{display:block}#res h2{font-size:64px;margin:0;color:#bb9af7}
+button{background:#7aa2f7;color:#1a1b26;border:0;padding:12px 26px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;margin-top:12px}
+.hint{opacity:.5;margin-top:24px;font-size:13px}
+</style></head><body><main>
+<h1>KEYFLOW</h1>
+<div class="stats"><div>WPM<b id="wpm">0</b></div><div>Accuracy<b id="acc">100%</b></div><div>Time<b id="time">30</b></div><div>Best<b id="best">0</b></div></div>
+<div id="bar"><div id="fill"></div></div>
+<div id="text"></div>
+<div id="res"><h2 id="rw"></h2><div id="rd"></div><button id="again">Try again (Enter)</button></div>
+<p class="hint" id="hint">Just start typing — the clock starts on your first key. Backspace fixes mistakes.</p>
+</main><script>
+const W='the quick brown fox jumps over a lazy dog while bright stars drift across quiet rivers and silver clouds hum with distant thunder when every small idea grows into something wonderful if you keep building and never stop learning how code can turn simple keys into living worlds'.split(' ');
+const $=id=>document.getElementById(id),T=30;let chars,pos,errs,typed,start,tm,done;
+let best=0;try{best=+localStorage.getItem('kfBest')||0}catch(e){}$('best').textContent=best;
+function reset(){clearInterval(tm);const t=[...W].sort(()=>Math.random()-.5).join(' ');chars=[...t];pos=errs=typed=0;start=0;done=0;
+$('text').innerHTML=chars.map(c=>`<span>${c}</span>`).join('');$('text').children[0].classList.add('cur');
+$('res').classList.remove('show');$('wpm').textContent=0;$('acc').textContent='100%';$('time').textContent=T;$('fill').style.width='100%';$('hint').style.display=''}
+function wpm(){const m=(Date.now()-start)/60000;return m>0?Math.round(pos/5/m):0}
+function finish(){done=1;clearInterval(tm);const w=wpm();const a=Math.round(100*(typed-errs)/Math.max(typed,1));
+if(w>best){best=w;try{localStorage.setItem('kfBest',w)}catch(e){}$('best').textContent=w}
+$('rw').textContent=w+' WPM';$('rd').textContent=a+'% accuracy'+(w>=best&&w>0?' · new best!':'');$('res').classList.add('show')}
+function key(e){if(e.key=='Enter'){reset();return}if(done||e.ctrlKey||e.metaKey)return;const s=$('text').children;
+if(e.key=='Backspace'){if(pos>0){s[pos].classList.remove('cur');pos--;s[pos].className='cur'}return}
+if(e.key.length!=1)return;e.preventDefault();
+if(!start){start=Date.now();$('hint').style.display='none';tm=setInterval(()=>{const l=Math.max(0,T-Math.floor((Date.now()-start)/1000));$('time').textContent=l;$('fill').style.width=l/T*100+'%';$('wpm').textContent=wpm();if(l<=0)finish()},200)}
+typed++;const ok=e.key==chars[pos];if(!ok)errs++;s[pos].className=ok?'ok':'bad';pos++;
+$('acc').textContent=Math.round(100*(typed-errs)/typed)+'%';if(pos<s.length)s[pos].classList.add('cur');else finish()}
+onkeydown=key;$('again').onclick=reset;reset();
+</script><a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
