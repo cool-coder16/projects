@@ -19,7 +19,7 @@ async function sync(){const{auth,db}=await load();await new Promise(r=>{const u=
  const ref=db.collection('scores').doc(u.uid),snap=await ref.get(),cloud=snap.exists?(snap.data().games||{}):{},loc=rd(SK)||{},merged={};
  for(const g of new Set([...Object.keys(cloud),...Object.keys(loc)])){const c=cloud[g],l=loc[g],low=!!((c||l).low);merged[g]={v:better(c&&c.v,l&&l.v,low),low}}
  // Publish changed bests to the public leaderboard (one small doc per player per game)
- const bt=db.batch();let n=0;for(const g in merged){if(!cloud[g]||cloud[g].v!==merged[g].v){bt.set(db.collection('leaderboard').doc(g).collection('entries').doc(u.uid),{username:u.displayName||'',score:merged[g].v,updated:Date.now()});n++}}if(n)await bt.commit();
+ const first=!rd('hubLbSynced'),bt=db.batch();let n=0;for(const g in merged){if(first||!cloud[g]||cloud[g].v!==merged[g].v){bt.set(db.collection('leaderboard').doc(g).collection('entries').doc(u.uid),{username:u.displayName||'',score:merged[g].v,updated:Date.now()});n++}}if(n)await bt.commit();wr('hubLbSynced',1);
  wr(SK,merged);await ref.set({username:u.displayName||'',games:merged,updated:Date.now()},{merge:true});return merged}
 window.Hub={load,sync,rd,wr,GAMES,LIST,
  // Games call Hub.score('gameId', value, lowerIsBetter?) — saved locally always, and to the account when logged in
