@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Focus Timer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>">
+<style>:root{--a:#ff7a59}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#171320;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#rg{position:relative;width:min(70vw,300px);margin:10px auto}svg{width:100%;transform:rotate(-90deg)}#tm{position:absolute;inset:0;display:grid;place-items:center;font-size:min(14vw,60px);font-weight:200;font-variant-numeric:tabular-nums}button.o{background:#ffffff22;color:#fff}button.o.s{background:var(--a);color:#000}</style>
+<main><h1>FOCUS</h1><div><button class="o s" data-m="25">Focus 25</button><button class="o" data-m="5">Break 5</button><button class="o" data-m="15">Long 15</button></div>
+<div id="rg"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#ffffff1a" stroke-width="5"/><circle id="pr" cx="50" cy="50" r="45" fill="none" stroke="#ff7a59" stroke-width="5" stroke-linecap="round" stroke-dasharray="282.7" style="filter:drop-shadow(0 0 4px #ff7a59)"/></svg><div id="tm">25:00</div></div>
+<button id="go">Start</button><button id="rs" class="o">Reset</button><p>Sessions completed: <b id="n">0</b></p></main>
+<script>const $=id=>document.getElementById(id);let tot=1500,left=1500,tm=null,end,n=0,ac;
+const show=()=>{const m=Math.floor(Math.ceil(left)/60),s=Math.ceil(left)%60;$('tm').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');$('pr').style.strokeDashoffset=282.7*(1-left/tot);document.title=tm?$('tm').textContent+' — Focus':'Focus Timer'};
+function beep(){ac=ac||new AudioContext();[0,.25,.5].forEach(d=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;g.gain.setValueAtTime(.3,ac.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d+.2);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+d);o.stop(ac.currentTime+d+.2)})}
+function stop(){clearInterval(tm);tm=null;$('go').textContent='Start'}
+$('go').onclick=()=>{if(tm){left=Math.max(0,(end-Date.now())/1000);stop();show();return}end=Date.now()+left*1000;$('go').textContent='Pause';tm=setInterval(()=>{left=Math.max(0,(end-Date.now())/1000);show();if(left<=0){stop();beep();if(tot==1500){n++;$('n').textContent=n}}},200)};
+$('rs').onclick=()=>{stop();left=tot;show()};document.querySelectorAll('.o[data-m]').forEach(b=>b.onclick=()=>{stop();tot=left=b.dataset.m*60;document.querySelectorAll('.o[data-m]').forEach(k=>k.classList.toggle('s',k==b));show()});show();</script>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2048</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
+<style>:root{--a:#f67c5f}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#faf8ef;color:#776e65;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#bd{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:min(90vw,380px);margin:0 auto 14px;background:#bbada0;padding:10px;border-radius:12px;touch-action:none}.t{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:min(8vw,34px);background:#cdc1b4;color:#776e65;transition:.1s}h1{text-shadow:none}</style>
+<main><h1>2048</h1><p>Score <b id="sc">0</b> · Best <b id="bs">0</b></p><div id="bd"></div><p id="msg">Arrow keys or swipe. Merge equal tiles to reach 2048!</p><button id="nw">New game</button></main>
+<script>const $=id=>document.getElementById(id);let g,sc,best=0;
+function add(){const e=g.map((v,i)=>v?-1:i).filter(i=>i>=0);if(e.length)g[e[Math.random()*e.length|0]]=Math.random()<.9?2:4}
+function slide(r){const a=r.filter(v=>v),o=[];for(let i=0;i<a.length;i++){if(a[i]==a[i+1]){o.push(a[i]*2);sc+=a[i]*2;i++}else o.push(a[i])}while(o.length<4)o.push(0);return o}
+function move(d){const ng=[...g];for(let k=0;k<4;k++){const idx=[0,1,2,3].map(j=>d<2?k*4+j:j*4+k);if(d%2)idx.reverse();const r=slide(idx.map(i=>g[i]));idx.forEach((i,j)=>ng[i]=r[j])}
+if(ng.join()==g.join())return;g=ng;add();best=Math.max(best,sc);draw();if(g.includes(2048))$('msg').textContent='🎉 2048! Keep going!';
+if(g.every(v=>v)&&![...g.keys()].some(i=>(i%4<3&&g[i]==g[i+1])||(i<12&&g[i]==g[i+4])))$('msg').textContent='Game over — no moves left.'}
+function draw(){$('bd').innerHTML=g.map(v=>`<div class="t" style="${v?`background:hsl(${30+Math.log2(v)*28},80%,${v>4?58:85}%);color:${v>4?'#fff':'#776e65'};${v>512?'font-size:min(6vw,26px)':''}`:''}">${v||''}</div>`).join('');$('sc').textContent=sc;$('bs').textContent=best}
+function init(){g=Array(16).fill(0);sc=0;add();add();$('msg').textContent='Arrow keys or swipe. Merge equal tiles to reach 2048!';draw()}
+const K={ArrowLeft:0,ArrowRight:1,ArrowUp:2,ArrowDown:3};onkeydown=e=>{if(e.key in K){e.preventDefault();move(K[e.key])}};
+let s0;onpointerdown=e=>s0=[e.clientX,e.clientY];onpointerup=e=>{if(!s0)return;const dx=e.clientX-s0[0],dy=e.clientY-s0[1];if(Math.hypot(dx,dy)>25)move(Math.abs(dx)>Math.abs(dy)?(dx>0?1:0):(dy>0?3:2));s0=null};$('nw').onclick=init;init();</script>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>

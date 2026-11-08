@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stack</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧱</text></svg>">
+<style>:root{--a:#ff8fab}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#101423;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(94vw,360px);border-radius:14px;touch-action:none;cursor:pointer}</style>
+<main><h1>STACK</h1><canvas id="c" width="360" height="560"></canvas><p>Click / tap / Space to drop the block. Line it up perfectly!</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d');let bl,cur,dir,sp,sc,best=0,over,cam,streak,pops;
+function init(){bl=[{x:110,w:140,h:0}];cur={x:0,w:140,h:1};dir=1;sp=2.6;sc=0;over=0;cam=0;streak=0;pops=[]}
+const col=h=>`hsl(${(h*14+330)%360},85%,62%)`;
+function drop(){if(over){init();return}const t=bl.at(-1),d=cur.x-t.x,ov=cur.w-Math.abs(d);
+if(ov<=0){over=1;best=Math.max(best,sc);return}
+if(Math.abs(d)<5){cur.x=t.x;cur.w=t.w;streak++;pops.push({y:cur.h,t:30})}else{streak=0;cur.w=ov;cur.x=d>0?cur.x:t.x}
+bl.push(cur);sc++;best=Math.max(best,sc);cur={x:dir>0?0:360-cur.w,w:cur.w,h:cur.h+1};sp=Math.min(2.6+sc*.12,9)}
+c.onpointerdown=drop;onkeydown=e=>{if(e.code=='Space'){e.preventDefault();drop()}};init();
+(function f(){if(!over){cur.x+=dir*sp;if(cur.x+cur.w>360){cur.x=360-cur.w;dir=-1}if(cur.x<0){cur.x=0;dir=1}}
+const target=Math.max(0,(bl.length-8)*30);cam+=(target-cam)*.1;x.fillStyle='#101423';x.fillRect(0,0,360,560);
+const Y=h=>520-(h*30)+cam;[...bl,...(over?[]:[cur])].forEach(b=>{x.fillStyle=col(b.h);x.shadowColor=col(b.h);x.shadowBlur=14;x.fillRect(b.x,Y(b.h),b.w,28)});x.shadowBlur=0;
+pops.forEach(p=>{p.t--;x.strokeStyle=`rgba(255,255,255,${p.t/30})`;x.lineWidth=3;x.strokeRect(bl.at(-1).x-p.t/2,Y(p.y)-p.t/2,bl.at(-1).w+p.t,28+p.t)});pops=pops.filter(p=>p.t>0);
+x.fillStyle='#fff';x.font='bold 40px system-ui';x.textAlign='center';x.fillText(sc,180,60);x.font='14px system-ui';x.fillStyle='#fff9';x.fillText('Best '+best+(streak>1?' · 🔥 perfect x'+streak:''),180,84);
+if(over){x.fillStyle='#000a';x.fillRect(0,0,360,560);x.fillStyle='#fff';x.font='bold 32px system-ui';x.fillText('Game over',180,270);x.font='16px system-ui';x.fillText('Score '+sc+' — click to retry',180,300)}requestAnimationFrame(f)})();</script>
+<a href="../" style="position:fixed;right:12px;bottom:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
