@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chicken Jump</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐔</text></svg>">
+<style>:root{--a:#ffb02e}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#16324a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(98vw,720px);border-radius:14px;touch-action:none;cursor:pointer;border:1px solid #ffffff22}</style>
+<main><h1>CHICKEN JUMP</h1><canvas id="c" width="720" height="360"></canvas><p>Click, tap or press Space to jump — press again in mid-air for a flap! Hold for higher jumps. Grab the eggs 🥚</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),GY=290,CX=120;
+let y,vy,jumps,obs,egs,dist,eggN,spd,st='ready',t=0,best=0,next,fx=[],sc=0;
+const R=(a,b)=>a+Math.random()*(b-a),mix=(a,b,k)=>a.map((v,i)=>Math.round(v+(b[i]-v)*k));
+const PAL=[[[110,198,255],[201,236,255]],[[255,138,92],[255,210,154]],[[11,16,48],[42,47,107]]];
+function init(){y=GY;vy=0;jumps=0;obs=[];egs=[];dist=0;eggN=0;spd=5;next=300;fx=[];sc=0}
+const score=()=>Math.floor(dist/10)+eggN*25;
+function inGap(){return obs.some(o=>o.t=='g'&&CX>o.x+12&&CX<o.x+o.w-12)}
+function jump(){if(st!='play'){init();st='play';t=0;return}if(y>=GY&&!inGap()){vy=-14.5;jumps=1}else if(jumps<2){vy=-12.5;jumps=2;for(let i=0;i<8;i++)fx.push({x:CX,y:y-10,vx:R(-3,0),vy:R(-1,2),l:1})}}
+function release(){if(vy<-5)vy=-5}
+c.onpointerdown=jump;onpointerup=release;onkeydown=e=>{if((e.code=='Space'||e.key=='ArrowUp'||e.key=='w')&&!e.repeat){e.preventDefault();jump()}};onkeyup=e=>{if(e.code=='Space'||e.key=='ArrowUp'||e.key=='w')release()};
+function spawn(){const r=Math.random(),sx=760;let o;
+if(r<.28)o={t:'h',x:sx,w:42,h:40};else if(r<.52)o={t:'f',x:sx,w:46,h:58};else if(r<.74&&dist>600)o={t:'g',x:sx,w:R(90,130)};else if(r<.9&&dist>1500)o={t:'b',x:CX+(sx-CX)*(spd+2.5)/spd,w:36,h:28,y:GY-R(45,75)};else o={t:'h',x:sx,w:42,h:40};
+obs.push(o);if(Math.random()<.6){const n=1+Math.floor(Math.random()*3);for(let i=0;i<n;i++)egs.push({x:sx+(o.w||40)/2-30+i*34,y:o.t=='g'?GY-R(110,140):GY-R(95,125)+(i==1?-14:0)})}}
+function die(){st='over';sc=score();best=Math.max(best,sc);window.Hub&&Hub.score('chicken',sc)}
+function step(){t++;if(st!='play')return;spd=Math.min(5+dist/2200,11.5);dist+=spd;next-=spd;if(next<=0){spawn();next=R(280,430)+spd*14}
+vy+=.8;y+=vy;if(y>=GY&&!inGap()&&vy>=0){y=GY;vy=0;jumps=0}
+obs.forEach(o=>o.x-=o.t=='b'?spd+2.5:spd);egs.forEach(e=>e.x-=spd);obs=obs.filter(o=>o.x>-160);egs=egs.filter(e=>e.x>-40);
+const l=CX-14,r=CX+14,top=y-38,bot=y;for(const o of obs){if(o.t=='g')continue;const oy=o.t=='b'?o.y:GY-o.h;if(r>o.x+6&&l<o.x+o.w-6&&bot>oy+6&&top<oy+(o.t=='b'?o.h:o.h)-4){die();return}}
+egs=egs.filter(e=>{if(Math.hypot(e.x-CX,e.y-(y-20))<26){eggN++;for(let i=0;i<6;i++)fx.push({x:e.x,y:e.y,vx:R(-3,3),vy:R(-4,0),l:1,g:1});return false}return true});
+if(y>GY+90)die();fx.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.3;p.l-=.04});fx=fx.filter(p=>p.l>0)}
+function sky(){const ph=(dist/4000)%3,i=Math.floor(ph),k=ph-i,A=PAL[i],B=PAL[(i+1)%3];return[mix(A[0],B[0],k),mix(A[1],B[1],k),i==1&&k>.5||i==2?1:0,ph]}
+init();(function f(){step();const[top,bot,night,ph]=sky(),g=x.createLinearGradient(0,0,0,GY);g.addColorStop(0,`rgb(${top})`);g.addColorStop(1,`rgb(${bot})`);x.fillStyle=g;x.fillRect(0,0,720,360);
+const dark=ph>=1.5&&ph<3?Math.min(1,(ph<2?(ph-1.5)*2:ph<2.7?1:(3-ph)*3.3)):0;x.fillStyle=`rgba(255,255,255,${dark*.9})`;for(let i=0;i<40;i++)x.fillRect((i*97)%720,(i*53)%200,2,2);
+x.fillStyle=dark>.5?'#f4f1c8':'#ffe27a';x.shadowColor=x.fillStyle;x.shadowBlur=30;x.beginPath();x.arc(600,70+ (dark>.5?0:20),26,0,7);x.fill();x.shadowBlur=0;
+for(const[off,sp,col,h]of[[0,.2,'#2f6b4a',60],[200,.45,'#245a3c',40]]){x.fillStyle=col;x.beginPath();x.moveTo(0,GY);for(let px=0;px<=720;px+=20)x.lineTo(px,GY-h-Math.sin((px+dist*sp+off)*.012)*h*.5);x.lineTo(720,GY);x.fill()}
+x.fillStyle='#5aa14a';x.fillRect(0,GY,720,12);x.fillStyle='#7a5430';x.fillRect(0,GY+12,720,60);x.fillStyle='#6a4626';for(let i=0;i<20;i++)x.fillRect(((i*60-dist)%720+720)%720,GY+30+(i%3)*10,18,4);
+obs.forEach(o=>{if(o.t=='g'){x.fillStyle='#2a8fd6';x.fillRect(o.x,GY,o.w,70);x.fillStyle='#7fd0ff';x.fillRect(o.x,GY,o.w,6);return}
+if(o.t=='h'){x.fillStyle='#e6c34a';x.fillRect(o.x,GY-o.h,o.w,o.h);x.strokeStyle='#a98a1f';x.lineWidth=2;for(let i=1;i<4;i++){x.beginPath();x.moveTo(o.x,GY-o.h+i*10);x.lineTo(o.x+o.w,GY-o.h+i*10);x.stroke()}}
+if(o.t=='f'){x.fillStyle='#f2efe6';for(let i=0;i<2;i++)x.fillRect(o.x+i*26,GY-o.h,16,o.h);x.fillRect(o.x,GY-o.h+14,42,8);x.fillRect(o.x,GY-o.h+34,42,8)}
+if(o.t=='b'){x.font='36px system-ui';x.textBaseline='middle';x.textAlign='center';x.fillText('🦅',o.x+18,o.y+14)}});
+egs.forEach(e=>{x.font='26px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('🥚',e.x,e.y+Math.sin(t/8+e.x)*3)});
+fx.forEach(p=>{x.fillStyle=p.g?`rgba(255,226,122,${p.l})`:`rgba(255,255,255,${p.l})`;x.fillRect(p.x,p.y,5,5)});
+if(st!='over'||y<GY+90){x.fillStyle='#0004';const onG=y>=GY-2&&!inGap();if(onG){x.beginPath();x.ellipse(CX,GY+4,22,6,0,0,7);x.fill()}
+x.save();x.translate(CX,y-22+(y>=GY&&st=='play'?Math.sin(t/2.5)*2:0));x.scale(-1,1);x.rotate(Math.max(-.3,Math.min(.4,-vy*.025)));x.font='50px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('🐔',0,0);x.restore()}
+x.textBaseline='alphabetic';x.fillStyle='#fff';x.font='bold 26px system-ui';x.textAlign='left';x.fillText(st=='over'?sc:score(),16,36);x.font='15px system-ui';x.fillText('🥚 '+eggN+' · Best '+best,16,58);
+if(st!='play'){x.fillStyle='#000a';x.fillRect(0,110,720,130);x.fillStyle='#fff';x.textAlign='center';x.font='bold 34px system-ui';x.fillText(st=='over'?'Fowl play! Score '+sc:'Chicken Jump',360,165);x.font='17px system-ui';x.fillText('Tap or press Space to '+(st=='over'?'try again':'start'),360,205)}requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

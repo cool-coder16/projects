@@ -12,13 +12,13 @@ c.onpointerdown=()=>{if(st!='play'){init();return}if(!fly&&left>0)fly={y:500}};
 const dist=(a,b)=>{const d=Math.abs(a-b)%TAU;return Math.min(d,TAU-d)};
 function over(){st='over';best=Math.max(best,sc);window.Hub&&Hub.score('darts',sc)}
 (function f(){t++;if(st=='play'){const sp=(.02+lv*.004)*(1+.7*Math.sin(t/60*(1+lv*.05)));rot+=sp*(lv%2?1:-1);
-if(fly){fly.y-=22;if(fly.y<=290){const a=((Math.PI/2-rot)%TAU+TAU)%TAU;if(S.some(s=>dist(s,a)<.2)){fly=null;over()}else{S.push(a);fly=null;sc++;left--;if(left<=0){lv++;msg='Level '+lv;setTimeout(()=>{msg=''},900);level()}}}}}
+if(fly){fly.y-=22;if(fly.y<=290){const a=((-rot)%TAU+TAU)%TAU;if(S.some(s=>dist(s,a)<.2)){fly=null;over()}else{S.push(a);fly=null;sc++;left--;if(left<=0){lv++;msg='Level '+lv;setTimeout(()=>{msg=''},900);level()}}}}}
 x.fillStyle='#1b1020';x.fillRect(0,0,400,560);x.save();x.translate(200,200);x.rotate(rot);
 S.forEach(a=>{x.save();x.rotate(a);x.fillStyle='#ddd';x.fillRect(-2,70,4,60);x.fillStyle='#ff5d73';x.beginPath();x.moveTo(0,70);x.lineTo(-9,100);x.lineTo(9,100);x.fill();x.restore()});
 const g=x.createRadialGradient(0,0,10,0,0,70);g.addColorStop(0,'#ffcf7a');g.addColorStop(1,'#b86a2a');x.fillStyle=g;x.shadowColor='#ffb454';x.shadowBlur=18;x.beginPath();x.arc(0,0,70,0,7);x.fill();x.shadowBlur=0;x.strokeStyle='#8a4a1a';x.lineWidth=3;for(const r of[20,40,58]){x.beginPath();x.arc(0,0,r,0,7);x.stroke()}x.restore();
 S.forEach(a=>{x.save();x.translate(200,200);x.rotate(rot+a);x.fillStyle='#fff';x.beginPath();x.arc(0,70,5,0,7);x.fill();x.restore()});
 if(fly){x.fillStyle='#ddd';x.fillRect(198,fly.y,4,60);x.fillStyle='#ff5d73';x.beginPath();x.moveTo(200,fly.y);x.lineTo(191,fly.y+30);x.lineTo(209,fly.y+30);x.fill()}
-for(let i=0;i<left-(fly?1:0);i++){x.fillStyle='#ddd';x.fillRect(188+ (i%12)*0,0,0,0)}
+
 x.fillStyle='#ddd';for(let i=0;i<Math.max(0,left-(fly?1:0));i++){x.save();x.translate(30+i*18,520);x.fillRect(-2,-20,4,28);x.fillStyle='#ff5d73';x.beginPath();x.moveTo(0,-26);x.lineTo(-6,-14);x.lineTo(6,-14);x.fill();x.fillStyle='#ddd';x.restore()}
 x.fillStyle='#fff';x.font='bold 30px system-ui';x.textAlign='left';x.fillText(sc,16,44);x.font='15px system-ui';x.textAlign='right';x.fillText('Level '+lv+' · Best '+best,384,40);
 if(msg){x.textAlign='center';x.font='bold 36px system-ui';x.fillStyle='#ffb454';x.fillText(msg,200,330)}

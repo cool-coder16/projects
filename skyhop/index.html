@@ -11,7 +11,7 @@ function gen(){while(top>cam-80){top-=R(55,95);pl.push({x:R(10,270),y:top,w:R(60
 const R=(a,b)=>a+Math.random()*(b-a);
 c.onpointermove=e=>{const r=c.getBoundingClientRect();tx=(e.clientX-r.left)/r.width*360};c.onpointerdown=e=>{c.onpointermove(e);if(st!='play'){init();st='play'}};
 onkeydown=e=>{if(e.key=='ArrowLeft')tx-=40;if(e.key=='ArrowRight')tx+=40;if(e.code=='Space'&&st!='play'){init();st='play'}};
-function step(){if(st!='play')return;px+=(tx-px)*.2;if(px<0)px=360;if(px>360)px=0;const old=py;vy+=.4;py+=vy;
+function step(){if(st!='play')return;px+=(tx-px)*.2;px=Math.max(12,Math.min(348,px));const old=py;vy+=.4;py+=vy;
 pl.forEach(p=>{if(p.m){p.x+=p.m*p.d;if(p.x<0||p.x+p.w>360)p.d*=-1}if(vy>0&&old+12<=p.y&&py+12>=p.y&&px>p.x-8&&px<p.x+p.w+8)vy=-11.5});
 if(py<cam+240)cam=py-240;sc=Math.max(sc,Math.floor((560-py)/10));gen();pl=pl.filter(p=>p.y<cam+620);
 if(py>cam+590){st='over';best=Math.max(best,sc);window.Hub&&Hub.score('skyhop',sc)}}
