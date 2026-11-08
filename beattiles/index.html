@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Beat Tiles</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎼</text></svg>">
+<style>:root{--a:#7c9cff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0d0b1a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(94vw,400px);border-radius:12px;background:#07060f;touch-action:none;border:1px solid #7c9cff44}</style>
+<main><h1>BEAT TILES</h1><canvas id="c" width="400" height="560"></canvas><p>Tap the tiles when they reach the bar — D F J K on a keyboard.</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),N=[261.6,293.7,329.6,392,440,523.3,587.3,659.3],COL=['#ff5d8f','#ffd23f','#4cd97b','#4dc3ff'];let T=[],sc=0,miss=0,combo=0,best=0,st='ready',sp=4,t=0,ac,fx=[],note=0,msg='';
+function snd(f){ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.25,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.4);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.4)}
+function start(){T=[];sc=miss=combo=0;sp=4;t=0;note=0;st='play'}
+function tap(l){if(st!='play'){start();return}const cand=T.filter(k=>k.l==l&&!k.h&&k.y+80>470&&k.y<530).sort((a,b)=>b.y-a.y)[0];
+if(!cand){miss++;combo=0;msg='Miss';chk();return}cand.h=1;const d=Math.abs(cand.y+40-500);const pf=d<22;sc+=pf?20:10;combo++;msg=pf?'PERFECT':'Good';snd(N[note++%N.length]*(Math.floor(note/8)%2?2:1));fx.push({l,t:1});sp=Math.min(4+sc/200,10)}
+function chk(){if(miss>=3){st='over';best=Math.max(best,sc)}}
+c.onpointerdown=e=>{const r=c.getBoundingClientRect();tap(Math.min(3,Math.floor((e.clientX-r.left)/r.width*4)))};
+onkeydown=e=>{const l='dfjk'.indexOf(e.key.toLowerCase());if(l>=0)tap(l)};
+function step(){if(st!='play')return;t+=sp;if(t>=Math.max(100,200-sc/8)){t=0;T.push({l:Math.floor(Math.random()*4),y:-80})}T.forEach(k=>k.y+=sp);
+for(const k of T)if(!k.h&&k.y>540&&!k.m){k.m=1;miss++;combo=0;msg='Missed';chk()}T=T.filter(k=>k.y<580&&!(k.h&&k.y>540))}
+(function f(){step();x.fillStyle='#07060f';x.fillRect(0,0,400,560);for(let i=0;i<4;i++){x.fillStyle=i%2?'#ffffff06':'#ffffff0d';x.fillRect(i*100,0,100,560)}
+fx.forEach(e=>{x.fillStyle=COL[e.l]+Math.floor(e.t*60).toString(16).padStart(2,'0');x.fillRect(e.l*100,0,100,560);e.t-=.08});fx=fx.filter(e=>e.t>0);
+x.fillStyle='#fff';x.shadowColor='#7c9cff';x.shadowBlur=14;x.fillRect(0,498,400,4);x.shadowBlur=0;
+T.forEach(k=>{if(k.h)return;x.fillStyle=COL[k.l];x.shadowColor=COL[k.l];x.shadowBlur=12;x.fillRect(k.l*100+6,k.y,88,80);x.shadowBlur=0});
+x.fillStyle='#fff';x.font='bold 22px system-ui';x.textAlign='left';x.fillText(sc,14,34);x.textAlign='right';x.fillText('♥'.repeat(Math.max(0,3-miss)),386,34);x.textAlign='center';x.font='bold 18px system-ui';x.fillText(combo>1?combo+' combo · '+msg:msg,200,60);
+if(st!='play'){x.fillStyle='#000a';x.fillRect(0,0,400,560);x.fillStyle='#fff';x.font='bold 28px system-ui';x.fillText(st=='over'?'Game over · '+sc:'Beat Tiles',200,250);x.font='16px system-ui';x.fillText(st=='over'?'Best '+best+' — tap to retry':'Tap a lane or press D F J K',200,285)}requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

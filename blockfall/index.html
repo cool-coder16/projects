@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Blockfall</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟦</text></svg>">
+<style>:root{--a:#4dd0ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a0e1a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#w{display:flex;gap:16px;justify-content:center;align-items:flex-start}canvas{border-radius:10px;background:#05070f;border:1px solid #4dd0ff44}#side{text-align:left;font-size:15px;line-height:1.9}#ct{margin-top:10px}#ct button{width:54px;height:54px;border-radius:14px;margin:3px;font-size:22px;padding:0}</style>
+<main><h1>BLOCKFALL</h1><div id="w"><canvas id="c" width="280" height="560" style="height:min(70vh,560px)"></canvas><div id="side">Score <b id="sc">0</b><br>Lines <b id="ln">0</b><br>Level <b id="lv">1</b><br>Next<br><canvas id="nx" width="100" height="100"></canvas></div></div>
+<div id="ct"><button data-k="l">◀</button><button data-k="r">▶</button><button data-k="u">⟳</button><button data-k="d">▼</button><button data-k="h">⤓</button></div><p>← → move · ↑ rotate · ↓ soft drop · Space hard drop · P pause</p></main>
+<script>const $=id=>document.getElementById(id),x=$('c').getContext('2d'),nx=$('nx').getContext('2d'),W=10,H=20,Z=28;
+const S=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]],COL=['#4dd0ff','#ffd23f','#b388ff','#4d7cff','#ff9f43','#4cd97b','#ff5d73'];
+let g,p,nxt,sc,ln,lv,over,paused,tm;const rnd=()=>{const i=Math.floor(Math.random()*7);return{m:S[i],c:i+1,x:3,y:0}};
+function init(){g=Array.from({length:H},()=>Array(W).fill(0));sc=ln=0;lv=1;over=0;paused=0;nxt=rnd();spawn();clearInterval(tm);tm=setInterval(tick,500)}
+function spawn(){p=nxt;nxt=rnd();if(hit(p.m,p.x,p.y))over=1;upd()}
+const hit=(m,px,py)=>m.some((r,j)=>r.some((v,i)=>v&&(px+i<0||px+i>=W||py+j>=H||g[py+j]&&g[py+j][px+i])));
+const rot=m=>m[0].map((_,i)=>m.map(r=>r[i]).reverse());
+function mv(dx){if(!hit(p.m,p.x+dx,p.y))p.x+=dx}
+function tick(){if(over||paused)return;if(!hit(p.m,p.x,p.y+1))p.y++;else lock()}
+function lock(){p.m.forEach((r,j)=>r.forEach((v,i)=>{if(v&&p.y+j>=0)g[p.y+j][p.x+i]=p.c}));let n=0;g=g.filter(r=>r.some(v=>!v)||(n++,false));while(g.length<H)g.unshift(Array(W).fill(0));
+if(n){ln+=n;sc+=[0,100,300,500,800][n]*lv;lv=1+Math.floor(ln/10);clearInterval(tm);tm=setInterval(tick,Math.max(90,500-lv*40))}spawn()}
+function drop(){while(!hit(p.m,p.x,p.y+1)){p.y++;sc+=2}lock()}
+function cell(c,i,j,z=Z){c.fillStyle=COL[i-1];c.shadowColor=COL[i-1];c.shadowBlur=6;c.fillRect(j*z+1,0,z-2,z-2)}
+function draw(){x.clearRect(0,0,280,560);x.strokeStyle='#ffffff0a';for(let i=0;i<=W;i++){x.beginPath();x.moveTo(i*Z,0);x.lineTo(i*Z,560);x.stroke()}
+const put=(m,ox,oy,c,gh)=>m.forEach((r,j)=>r.forEach((v,i)=>{if(v){x.save();x.translate(0,(oy+j)*Z);x.globalAlpha=gh?.25:1;cell(x,c,ox+i);x.restore()}}));
+g.forEach((r,j)=>r.forEach((v,i)=>{if(v){x.save();x.translate(0,j*Z);cell(x,v,i);x.restore()}}));
+if(!over){let gy=p.y;while(!hit(p.m,p.x,gy+1))gy++;put(p.m,p.x,gy,p.c,1);put(p.m,p.x,p.y,p.c)}
+nx.clearRect(0,0,100,100);nxt.m.forEach((r,j)=>r.forEach((v,i)=>{if(v){nx.save();nx.translate(0,20+j*22);cell(nx,nxt.c,i+1,22);nx.restore()}}));
+if(over||paused){x.fillStyle='#000a';x.fillRect(0,0,280,560);x.fillStyle='#fff';x.font='bold 26px system-ui';x.textAlign='center';x.fillText(over?'Game over':'Paused',140,270);x.font='14px system-ui';x.fillText(over?'Press Enter to restart':'Press P to resume',140,300)}}
+function upd(){$('sc').textContent=sc;$('ln').textContent=ln;$('lv').textContent=lv}
+function act(k){if(over||paused&&k!='p')return;if(k=='l')mv(-1);if(k=='r')mv(1);if(k=='d'){tick();sc++}if(k=='h')drop();if(k=='u'){const m=rot(p.m);for(const o of[0,-1,1,-2,2])if(!hit(m,p.x+o,p.y)){p.m=m;p.x+=o;break}}}
+onkeydown=e=>{const k={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',' ':'h'}[e.key];if(k){e.preventDefault();act(k)}if(e.key=='p'||e.key=='P')paused^=1;if(e.key=='Enter'&&over)init()};
+document.querySelectorAll('#ct button').forEach(b=>b.onpointerdown=()=>act(b.dataset.k));
+(function f(){draw();upd();requestAnimationFrame(f)})();init();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

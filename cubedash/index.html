@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cube Dash</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟪</text></svg>">
+<style>:root{--a:#ff4fd8}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#120a24;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(96vw,720px);border-radius:14px;touch-action:none;cursor:pointer}</style>
+<main><h1>CUBE DASH</h1><canvas id="c" width="720" height="360"></canvas><p>Click, tap or Space to jump. Hold to keep jumping. Survive as long as you can!</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),GY=290;let y,vy,rot,ob,dist,att=1,best=0,st='ready',hold=0,next,spd,t=0,hue=300,part=[];
+function init(){y=GY-34;vy=0;rot=0;ob=[];dist=0;next=500;spd=6;part=[]}
+function jump(){if(st=='ready'||st=='dead'){if(st=='dead')att++;init();st='play';return}if(y>=GY-34)vy=-12.5}
+c.onpointerdown=()=>{hold=1;jump()};onpointerup=()=>hold=0;onkeydown=e=>{if(e.code=='Space'||e.key=='ArrowUp'){e.preventDefault();if(!hold){hold=1;jump()}}};onkeyup=()=>hold=0;
+function gen(){const r=Math.random(),g=Math.max(180,320-dist*.01);if(r<.4)ob.push({t:'s',x:next});else if(r<.65){ob.push({t:'s',x:next});ob.push({t:'s',x:next+34})}else if(r<.85)ob.push({t:'b',x:next,h:36});else{ob.push({t:'b',x:next,h:36});ob.push({t:'s',x:next+36+20})}next+=g+Math.random()*120}
+function die(){st='dead';best=Math.max(best,Math.floor(dist/10));for(let i=0;i<30;i++)part.push({x:120,y,vx:Math.random()*10-5,vy:Math.random()*-9,l:1})}
+function step(){t++;hue=(hue+.3)%360;if(st=='play'){spd=Math.min(6+dist*.0008,11);dist+=spd;if(hold)jump();vy+=.65;y+=vy;if(y>=GY-34){y=GY-34;vy=0;rot=Math.round(rot/(Math.PI/2))*Math.PI/2}else rot+=.09;
+while(next<dist+800)gen();for(const o of ob){const sx=o.x-dist+120;if(sx<70||sx>170)continue;
+if(o.t=='s'&&sx>120-14&&sx<120+16&&y>GY-34-20+ -4&&y+34>GY-24)die();
+if(o.t=='b'&&sx>120-30&&sx<120+30&&y+34>GY-o.h+6)die()}}
+part.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.5;p.l-=.02})}
+(function f(){step();const g=x.createLinearGradient(0,0,0,360);g.addColorStop(0,`hsl(${hue},70%,14%)`);g.addColorStop(1,`hsl(${hue+40},70%,28%)`);x.fillStyle=g;x.fillRect(0,0,720,360);
+x.fillStyle='#ffffff10';for(let i=0;i<8;i++){const bx=((i*140-dist*.3)%1120+1120)%1120-200;x.fillRect(bx,120,60,GY-120)}
+x.fillStyle='#000a';x.fillRect(0,GY,720,70);x.fillStyle=`hsl(${hue+100},100%,65%)`;x.fillRect(0,GY,720,3);
+for(const o of ob){const sx=o.x-dist+120;if(sx<-60||sx>760)continue;x.fillStyle='#fff';x.shadowColor='#ff2f9a';x.shadowBlur=12;
+if(o.t=='s'){x.beginPath();x.moveTo(sx-16,GY);x.lineTo(sx,GY-34);x.lineTo(sx+16,GY);x.fill()}else{x.fillStyle='#2a1450';x.strokeStyle='#ff4fd8';x.lineWidth=3;x.fillRect(sx-17,GY-o.h,34,o.h);x.strokeRect(sx-17,GY-o.h,34,o.h)}x.shadowBlur=0}
+if(st!='dead'){x.save();x.translate(120,y+17);x.rotate(rot);x.fillStyle='#ffe14d';x.shadowColor='#ffe14d';x.shadowBlur=18;x.fillRect(-17,-17,34,34);x.fillStyle='#120a24';x.fillRect(-9,-8,6,6);x.fillRect(3,-8,6,6);x.fillRect(-9,5,18,4);x.restore()}
+part.forEach(p=>{x.fillStyle=`rgba(255,225,77,${Math.max(0,p.l)})`;x.fillRect(p.x,p.y,8,8)});
+x.fillStyle='#fff';x.font='bold 18px system-ui';x.textAlign='left';x.fillText(Math.floor(dist/10)+' m',16,30);x.textAlign='right';x.fillText('Attempt '+att+' · Best '+best+' m',704,30);
+if(st!='play'){x.textAlign='center';x.font='bold 30px system-ui';x.fillText(st=='dead'?'Crashed! Tap to retry':'Tap to start',360,160)}requestAnimationFrame(f)})();init();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
