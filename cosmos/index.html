@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 9 9%27><circle cx=%274.5%27 cy=%274.5%27 r=%273%27 fill=%27%237af%27/></svg>"><title>Cosmos — Living Flow Field</title>
 <style>html,body{margin:0;height:100%;background:#05050f;overflow:hidden;font-family:system-ui,sans-serif}canvas{display:block}
 #ui{position:fixed;left:16px;bottom:16px;color:#cfd8ff;font-size:13px;background:#0a0a1c99;padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);line-height:1.6}
-h1{position:fixed;top:16px;left:20px;margin:0;color:#fff;font-weight:200;letter-spacing:.4em;font-size:18px;text-shadow:0 0 20px #7af}</style></head><body>
+h1{position:fixed;top:48px;left:0;right:0;text-align:center;margin:0;color:#fff;font-weight:200;letter-spacing:.4em;font-size:18px;text-shadow:0 0 20px #7af}</style></head><body>
 <h1>COSMOS</h1><canvas id="c"></canvas>
 <div id="ui">Move mouse to attract · Click to burst · <b>Space</b> changes palette</div>
 <script>
@@ -22,4 +22,4 @@ const ox=p.x,oy=p.y;p.x+=vx;p.y+=vy;
 if(p.x<0||p.x>W||p.y<0||p.y>H){p.x=Math.random()*W;p.y=Math.random()*H;continue}
 x.strokeStyle=`hsla(${hue+p.w*80+a*10},90%,${55+p.w*20}%,.5)`;x.lineWidth=.8+p.w;x.beginPath();x.moveTo(ox,oy);x.lineTo(p.x,p.y);x.stroke()}
 for(const g of rings){g.r+=6;x.strokeStyle='hsla('+hue+',90%,70%,'+Math.max(0,1-g.r/400)+')';x.lineWidth=2;x.beginPath();x.arc(g.x,g.y,g.r,0,7);x.stroke()}while(rings.length&&rings[0].r>400)rings.shift();x.globalCompositeOperation='source-over';requestAnimationFrame(loop)}loop();
-</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

@@ -4,7 +4,7 @@
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#0d0221;font-family:system-ui,sans-serif;color:#fff;touch-action:none;user-select:none}
 canvas{position:fixed;inset:0}
-#hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:16px 22px;font-weight:700;letter-spacing:.1em;text-shadow:0 0 12px #ff2fa0;pointer-events:none;font-size:clamp(14px,2.5vw,22px)}
+#hud{position:fixed;top:42px;left:0;right:0;display:flex;justify-content:space-between;padding:16px 22px;font-weight:700;letter-spacing:.1em;text-shadow:0 0 12px #ff2fa0;pointer-events:none;font-size:clamp(14px,2.5vw,22px)}
 #bar{width:min(30vw,200px);height:8px;background:#ffffff22;border-radius:6px;margin-top:8px;overflow:hidden}#bf{height:100%;width:100%;background:linear-gradient(90deg,#00e5ff,#ff2fa0);box-shadow:0 0 12px #00e5ff}
 #ov{position:fixed;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none;text-shadow:0 0 30px #ff2fa0}
 #ov h1{margin:0;font-size:clamp(34px,9vw,92px);font-style:italic;letter-spacing:.08em;background:linear-gradient(#ffe14d,#ff2fa0);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 18px #ff2fa099)}
@@ -82,4 +82,4 @@ onpointerdown=e=>{go();boosting=1;onpointermove(e)};onpointerup=()=>boosting=0;
 const K={};onkeydown=e=>{if(e.code=='Space'){e.preventDefault();go();boosting=1}if(e.key=='m'||e.key=='M')muted^=1;
 if(e.key=='ArrowLeft'||e.key=='a')tx=Math.max(-1.1,tx-.3);if(e.key=='ArrowRight'||e.key=='d')tx=Math.min(1.1,tx+.3)};
 onkeyup=e=>{if(e.code=='Space')boosting=0};
-</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

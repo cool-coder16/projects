@@ -43,4 +43,4 @@ c.onpointermove=e=>{if(aim)aim=pt(e)};
 c.onpointerup=e=>{if(!aim)return;const a=pt(e),vx=(ship.x-a.x)*.1,vy=(ship.y-a.y)*.1;aim=null;if(Math.hypot(vx,vy)>.5)launch(vx,vy)};
 onkeydown=e=>{if(e.key=='r'||e.key=='R'){gen()}};
 gen();frame();
-</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

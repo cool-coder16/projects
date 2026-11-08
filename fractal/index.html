@@ -28,4 +28,4 @@ c.onpointerdown=e=>{drag=pos(e);c.setPointerCapture(e.pointerId)};c.onpointerup=
 c.onwheel=e=>{e.preventDefault();zoom*=e.deltaY>0?1.12:.89;dirty=1};
 onkeydown=e=>{if(e.code=='Space'){e.preventDefault();pal++;mk()}if(e.key=='m'||e.key=='M'){mandel^=1;vx=mandel?-.5:0;vy=0;zoom=mandel?1.6:1.6}dirty=1};
 (function f(){if(dirty){dirty=0;draw()}requestAnimationFrame(f)})();
-</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

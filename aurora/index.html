@@ -4,7 +4,7 @@
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#030914;font-family:system-ui,sans-serif;color:#dff}
 canvas{position:fixed;inset:0;cursor:crosshair}
-header{position:fixed;top:0;left:0;right:0;text-align:center;padding:28px 16px;pointer-events:none}
+header{position:fixed;top:0;left:0;right:0;text-align:center;padding:44px 16px 28px;pointer-events:none}
 h1{margin:0;font-weight:200;letter-spacing:.5em;font-size:clamp(20px,4vw,38px);text-shadow:0 0 30px #39f2b0}
 p{margin:8px 0 0;opacity:.6;font-size:14px}
 #bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;padding:10px 14px;background:#0b1a3355;border:1px solid #fff2;border-radius:40px;backdrop-filter:blur(10px)}
@@ -37,4 +37,4 @@ bits=bits.filter(b=>b.l>0);
 for(const s of shoot){s.x+=s.vx;s.y+=s.vy;s.l-=.012;x.strokeStyle=`rgba(255,255,255,${s.l})`;x.lineWidth=2;x.beginPath();x.moveTo(s.x,s.y);x.lineTo(s.x-s.vx*8,s.y-s.vy*8);x.stroke()}
 shoot=shoot.filter(s=>s.l>0);
 requestAnimationFrame(f)})();
-</script><a href="../" style="position:fixed;left:12px;top:12px;z-index:99999;background:#000a;color:#fff;font:600 13px system-ui;padding:8px 14px;border-radius:20px;text-decoration:none;border:1px solid #fff4;backdrop-filter:blur(6px)">🏠 Home</a></body></html>
+</script><style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
