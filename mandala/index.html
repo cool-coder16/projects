@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mandala Maker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+<style>:root{--a:#c9a7ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#08060f;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(94vw,560px);aspect-ratio:1;border-radius:50%;background:#000;box-shadow:0 0 70px #8a5cff44;touch-action:none;cursor:crosshair}input{accent-color:#c9a7ff}</style>
+<main><h1>MANDALA</h1><canvas id="c" width="560" height="560"></canvas><p>Draw anywhere — it mirrors around the center.<br>Petals <input id="n" type="range" min="2" max="24" value="12"> Brush <input id="b" type="range" min="1" max="8" value="2"></p><button id="mi">Mirror: on</button><button id="cl">Clear</button><button id="sv">Save PNG</button></main>
+<script>const $=id=>document.getElementById(id),c=$('c'),x=c.getContext('2d');let dn=0,lx,ly,h=0,mi=1;x.fillStyle='#000';x.fillRect(0,0,560,560);
+const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width*560-280,(e.clientY-r.top)/r.height*560-280]};
+c.onpointerdown=e=>{dn=1;[lx,ly]=pt(e);c.setPointerCapture(e.pointerId)};c.onpointerup=()=>dn=0;
+c.onpointermove=e=>{if(!dn)return;const[a,b]=pt(e),n=+$('n').value;h=(h+2)%360;x.globalCompositeOperation='lighter';x.lineCap='round';x.lineWidth=+$('b').value;x.strokeStyle=`hsl(${h},100%,60%)`;x.shadowColor=x.strokeStyle;x.shadowBlur=10;
+for(let i=0;i<n;i++){x.save();x.translate(280,280);x.rotate(i*2*Math.PI/n);for(const f of mi?[1,-1]:[1]){x.save();x.scale(1,f);x.beginPath();x.moveTo(lx,ly);x.lineTo(a,b);x.stroke();x.restore()}x.restore()}lx=a;ly=b};
+$('mi').onclick=()=>{mi^=1;$('mi').textContent='Mirror: '+(mi?'on':'off')};$('cl').onclick=()=>{x.globalCompositeOperation='source-over';x.shadowBlur=0;x.fillStyle='#000';x.fillRect(0,0,560,560)};
+$('sv').onclick=()=>{const a=document.createElement('a');a.href=c.toDataURL();a.download='mandala.png';a.click()};</script>
+</body></html>

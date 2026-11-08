@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neon Pong</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏓</text></svg>">
+<style>:root{--a:#3df5ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#05080f;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(94vw,640px);border-radius:12px;border:1px solid #3df5ff44;box-shadow:0 0 40px #3df5ff22;touch-action:none;cursor:none}</style>
+<main><h1>NEON PONG</h1><canvas id="c" width="640" height="400"></canvas><p>Move mouse / finger to control your paddle · first to 7 wins · Click to serve</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d');let py=170,ay=170,b,ps=0,as=0,st='idle',tr=[],shk=0,msg='Click to serve';
+function serve(d){b={x:320,y:200,vx:4.2*d,vy:(Math.random()-.5)*4};tr=[]}
+c.onpointermove=e=>{const r=c.getBoundingClientRect();py=Math.max(0,Math.min(340,(e.clientY-r.top)/r.height*400-30))};
+c.onpointerdown=e=>{c.onpointermove(e);if(st!='play'){if(st=='over'){ps=as=0}st='play';serve(Math.random()<.5?1:-1)}};
+function bounce(px,dir,pad){const h=(b.y-(pad+30))/30;b.vx=-b.vx*1.06;b.vy=h*5;if(Math.abs(b.vx)>11)b.vx=11*Math.sign(b.vx);b.x=px;shk=4}
+function step(){if(st!='play')return;b.x+=b.vx;b.y+=b.vy;if(b.y<6||b.y>394){b.vy*=-1;b.y=Math.max(6,Math.min(394,b.y))}
+ay+=Math.max(-3.4,Math.min(3.4,(b.y-30-ay)*.12));ay=Math.max(0,Math.min(340,ay));
+if(b.vx<0&&b.x<30&&b.x>14&&b.y>py-4&&b.y<py+64)bounce(30,1,py);if(b.vx>0&&b.x>610&&b.x<626&&b.y>ay-4&&b.y<ay+64)bounce(610,-1,ay);
+tr.push([b.x,b.y]);if(tr.length>14)tr.shift();
+if(b.x<-10||b.x>650){if(b.x<0)as++;else ps++;shk=10;if(ps==7||as==7){st='over';msg=ps==7?'🎉 You win! Click to play again':'The AI wins. Click to rematch'}else{st='idle';msg='Click to serve'}}}
+(function f(){step();x.save();if(shk>0){x.translate((Math.random()-.5)*shk,(Math.random()-.5)*shk);shk--}x.fillStyle='#05080f';x.fillRect(-10,-10,660,420);
+x.strokeStyle='#ffffff22';x.setLineDash([10,12]);x.beginPath();x.moveTo(320,0);x.lineTo(320,400);x.stroke();x.setLineDash([]);
+x.fillStyle='#ffffff33';x.font='bold 80px system-ui';x.textAlign='center';x.fillText(ps,200,100);x.fillText(as,440,100);
+x.shadowBlur=20;x.shadowColor='#3df5ff';x.fillStyle='#3df5ff';x.fillRect(14,py,10,60);x.shadowColor='#ff3d9a';x.fillStyle='#ff3d9a';x.fillRect(616,ay,10,60);
+if(st=='play'){tr.forEach(([a,q],i)=>{x.globalAlpha=i/20;x.fillStyle='#fff';x.beginPath();x.arc(a,q,6*i/14,0,7);x.fill()});x.globalAlpha=1;x.shadowColor='#fff';x.fillStyle='#fff';x.beginPath();x.arc(b.x,b.y,7,0,7);x.fill()}
+else{x.shadowBlur=0;x.fillStyle='#fff';x.font='bold 26px system-ui';x.fillText(msg,320,250)}x.restore();requestAnimationFrame(f)})();</script>
+</body></html>

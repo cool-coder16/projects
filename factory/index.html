@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Idle Factory</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏭</text></svg>">
+<style>:root{--a:#ffb020}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#14161c;color:#eef;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#big{width:150px;height:150px;border-radius:50%;border:0;font-size:70px;background:radial-gradient(#ffd36b,#ff9800);box-shadow:0 0 40px #ffb02088;cursor:pointer;margin:10px;transition:.05s}#big:active{transform:scale(.92)}.u{display:flex;justify-content:space-between;align-items:center;background:#1f232d;border-radius:12px;padding:10px 14px;margin:8px 0;text-align:left;opacity:.45}.u.ok{opacity:1;cursor:pointer;outline:2px solid var(--a)}.u small{display:block;opacity:.7}.f{position:fixed;pointer-events:none;color:var(--a);font-weight:800;animation:up .8s forwards}@keyframes up{to{transform:translateY(-60px);opacity:0}}</style>
+<main><h1>IDLE FACTORY</h1><div style="font-size:38px;font-weight:800" id="n">0</div><div id="ps" style="opacity:.7"></div><button id="big">⚙️</button><div id="us"></div></main>
+<script>const $=id=>document.getElementById(id);const U=[['🤖 Robot arm',15,.2],['🔧 Assembly line',100,1.5],['🏗️ Mini factory',1100,9],['🚀 Rocket works',12e3,60],['🌌 Quantum forge',130e3,420]];
+let n=0,own=U.map(()=>0),click=1;try{const s=JSON.parse(localStorage.getItem('fac'));if(s){n=s.n;own=s.own;click=s.click}}catch(e){}
+const cost=(i)=>Math.ceil(U[i][1]*1.15**own[i]),fm=v=>v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'k':Math.floor(v),ps=()=>U.reduce((a,u,i)=>a+u[2]*own[i],0);
+const ccost=()=>Math.ceil(50*3**(click-1));
+function build(){$('us').innerHTML='';const cu=document.createElement('div');cu.className='u';cu.id='uc';cu.onclick=()=>{if(n>=ccost()){n-=ccost();click++;ren()}};$('us').append(cu);U.forEach((u,i)=>{const d=document.createElement('div');d.className='u';d.id='u'+i;d.onclick=()=>{if(n>=cost(i)){n-=cost(i);own[i]++;ren()}};$('us').append(d)})}
+function ren(){$('n').textContent=fm(n)+' ⚙️';$('ps').textContent=ps().toFixed(1)+' per second · '+click+' per click';
+$('uc').className='u'+(n>=ccost()?' ok':'');$('uc').innerHTML=`<span>👆 Stronger click<small>+1 per click · owned ${click}</small></span><b>${fm(ccost())}</b>`;
+U.forEach((u,i)=>{const e=$('u'+i);e.className='u'+(n>=cost(i)?' ok':'');e.innerHTML=`<span>${u[0]}<small>+${u[2]}/s each · owned ${own[i]}</small></span><b>${fm(cost(i))}</b>`})}
+$('big').onclick=e=>{n+=click;const f=document.createElement('div');f.className='f';f.textContent='+'+click;f.style.left=e.clientX-10+'px';f.style.top=e.clientY-20+'px';document.body.append(f);setTimeout(()=>f.remove(),800);ren()};
+setInterval(()=>{n+=ps()/10;ren()},100);setInterval(()=>{try{localStorage.setItem('fac',JSON.stringify({n,own,click}))}catch(e){}},3000);build();ren();</script>
+</body></html>

@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sort Show — Algorithms</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<style>:root{--a:#58a6ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:100%;border-radius:12px;background:#010409}select,input{accent-color:var(--a);background:#21262d;color:#fff;border:0;border-radius:10px;padding:8px}</style>
+<main><h1>SORT SHOW</h1><canvas id="c" width="640" height="320"></canvas><div><select id="al"><option value="bubble">Bubble sort</option><option value="insertion">Insertion sort</option><option value="selection">Selection sort</option><option value="quick">Quick sort</option><option value="merge">Merge sort</option></select>
+<button id="go">▶ Sort</button><button id="sh">🔀 Shuffle</button></div><p>Speed <input id="sp" type="range" min="1" max="100" value="60"> · Steps <b id="st">0</b> · <span id="note"></span></p></main>
+<script>const $=id=>document.getElementById(id),c=$('c'),x=c.getContext('2d'),N=64;let a,hl=[],steps=0,run=0,ac;
+const NOTE={bubble:'Swaps neighbours — simple but slow (O(n²)).',insertion:'Slides each item into place, like sorting cards.',selection:'Finds the smallest, puts it first, repeats.',quick:'Picks a pivot, splits, recurses — fast on average!',merge:'Splits in halves, sorts, merges back — always O(n log n).'};
+function shuf(){a=[...Array(N).keys()].map(i=>i+1).sort(()=>Math.random()-.5);hl=[];steps=0;run=0;draw()}
+function draw(){x.clearRect(0,0,640,320);const w=640/N;a.forEach((v,i)=>{x.fillStyle=hl.includes(i)?'#fff':`hsl(${v/N*280+200},85%,${hl.length?50:55}%)`;x.fillRect(i*w+1,320-v*4.8,w-2,v*4.8)});$('st').textContent=steps;$('note').textContent=NOTE[$('al').value]}
+function* bubble(){for(let i=0;i<N;i++)for(let j=0;j<N-i-1;j++){yield[j,j+1];if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];yield[j,j+1]}}}
+function* insertion(){for(let i=1;i<N;i++){let j=i;while(j>0&&a[j-1]>a[j]){[a[j],a[j-1]]=[a[j-1],a[j]];yield[j,j-1];j--}}}
+function* selection(){for(let i=0;i<N;i++){let m=i;for(let j=i+1;j<N;j++){yield[m,j];if(a[j]<a[m])m=j}[a[i],a[m]]=[a[m],a[i]];yield[i,m]}}
+function* quick(l=0,r=N-1){if(l>=r)return;const p=a[r];let i=l;for(let j=l;j<r;j++){yield[j,r];if(a[j]<p){[a[i],a[j]]=[a[j],a[i]];i++;yield[i,j]}}[a[i],a[r]]=[a[r],a[i]];yield[i,r];yield*quick(l,i-1);yield*quick(i+1,r)}
+function* merge(l=0,r=N-1){if(l>=r)return;const m=(l+r)>>1;yield*merge(l,m);yield*merge(m+1,r);const L=a.slice(l,m+1),R=a.slice(m+1,r+1);let i=0,j=0,k=l;while(i<L.length||j<R.length){a[k]=j>=R.length||(i<L.length&&L[i]<=R[j])?L[i++]:R[j++];yield[k,k];k++}}
+const G={bubble,insertion,selection,quick,merge};
+$('go').onclick=async()=>{if(run)return;run=1;ac=ac||new AudioContext();const it=G[$('al').value]();steps=0;
+while(run){const t=performance.now(),per=Math.ceil($('sp').value/8);for(let k=0;k<per;k++){const n=it.next();if(n.done){run=0;break}hl=n.value;steps++}
+if(hl.length){const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=200+a[hl[0]]*12;g.gain.value=.03;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.04)}draw();await new Promise(r=>setTimeout(r,Math.max(1,40-$('sp').value*.4)))}
+hl=[];draw();if(!a.some((v,i)=>i&&a[i-1]>v)){for(let i=0;i<N;i++){hl=[i];draw();await new Promise(r=>setTimeout(r,8))}hl=[];draw()}};
+$('sh').onclick=shuf;$('al').onchange=()=>{run=0;shuf()};shuf();</script>
+</body></html>

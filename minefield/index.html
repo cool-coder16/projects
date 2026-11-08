@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Minefield</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💣</text></svg>">
+<style>:root{--a:#ff5d5d}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#151a1f;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#bd{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;width:min(92vw,400px);margin:0 auto 12px}.c{aspect-ratio:1;border:0;border-radius:6px;background:#2d3a45;font-size:min(5.5vw,22px);font-weight:800;margin:0;padding:0;color:#fff}.c.o{background:#0e1317}.c.x{background:#7a1f1f}</style>
+<main><h1>MINEFIELD</h1><p>💣 10 · ⏱ <b id="t">0</b>s · 🚩 <b id="f">0</b></p><div id="bd"></div><p id="msg">Clear the field without hitting a mine. Right-click (or Flag mode) to flag.</p><button id="fm">Flag mode: off</button><button id="nw">New game</button></main>
+<script>const $=id=>document.getElementById(id),N=9,M=10,COL=['','#4da3ff','#4cd97b','#ff6b6b','#b388ff','#ffa94d','#3dd6d0','#fff','#aaa'];let g,over,first,tm,fm=0;
+const nb=i=>{const r=[],x=i%N,y=Math.floor(i/N);for(let dy=-1;dy<2;dy++)for(let dx=-1;dx<2;dx++){const a=x+dx,b=y+dy;if((dx||dy)&&a>=0&&b>=0&&a<N&&b<N)r.push(b*N+a)}return r};
+function init(){g=[...Array(N*N)].map(()=>({m:0,o:0,f:0,n:0}));over=0;first=1;clearInterval(tm);$('t').textContent=0;$('msg').textContent='Clear the field without hitting a mine. Right-click (or Flag mode) to flag.';
+$('bd').innerHTML='';g.forEach((_,i)=>{const e=document.createElement('button');e.className='c';e.onclick=()=>tap(i);e.oncontextmenu=ev=>{ev.preventDefault();flag(i)};$('bd').append(e)});draw()}
+function place(s){let k=0;while(k<M){const i=Math.floor(Math.random()*N*N);if(i==s||g[i].m||nb(s).includes(i))continue;g[i].m=1;k++}g.forEach((c,i)=>c.n=nb(i).filter(j=>g[j].m).length)}
+function open(i){const c=g[i];if(c.o||c.f)return;c.o=1;if(!c.n&&!c.m)nb(i).forEach(open)}
+function flag(i){if(over||g[i].o)return;g[i].f^=1;draw()}
+function tap(i){if(over)return;if(fm){flag(i);return}if(first){place(i);first=0;const t0=Date.now();tm=setInterval(()=>$('t').textContent=Math.floor((Date.now()-t0)/1000),500)}
+if(g[i].f)return;if(g[i].m){over=1;clearInterval(tm);g.forEach(c=>{if(c.m)c.o=1});g[i].x=1;$('msg').textContent='💥 Boom! You hit a mine.'}else open(i);
+if(!over&&g.every(c=>c.m||c.o)){over=1;clearInterval(tm);$('msg').textContent='🎉 Cleared in '+$('t').textContent+'s!'}draw()}
+function draw(){g.forEach((c,i)=>{const e=$('bd').children[i];e.className='c'+(c.o?' o':'')+(c.x?' x':'');e.textContent=c.o?(c.m?'💣':c.n||''):c.f?'🚩':'';e.style.color=COL[c.n]||'#fff'});$('f').textContent=g.filter(c=>c.f).length}
+$('fm').onclick=()=>{fm^=1;$('fm').textContent='Flag mode: '+(fm?'ON':'off')};$('nw').onclick=init;init();</script>
+</body></html>

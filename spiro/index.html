@@ -10,7 +10,7 @@ button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18
 <script>const $=id=>document.getElementById(id),c=$('c'),x=c.getContext('2d');let t,px,py,end;
 const gcd=(a,b)=>b?gcd(b,a%b):a;
 function pt(t){const R=+$('R').value,r=+$('r').value,d=+$('d').value,k=(R-r)/r,s=250/(Math.abs(R-r)+d);return[280+s*((R-r)*Math.cos(t)+d*Math.cos(k*t)),280+s*((R-r)*Math.sin(t)-d*Math.sin(k*t))]}
-function reset(){x.fillStyle='#000';x.fillRect(0,0,560,560);t=0;[px,py]=pt(0);const R=+$('R').value,r=+$('r').value;end=2*Math.PI*r/gcd(R,r)}
+function reset(){x.globalCompositeOperation='source-over';x.shadowBlur=0;x.fillStyle='#000';x.fillRect(0,0,560,560);t=0;[px,py]=pt(0);const R=+$('R').value,r=+$('r').value;end=2*Math.PI*r/gcd(R,r)}
 function f(){x.globalCompositeOperation='lighter';x.lineWidth=1.4;for(let i=0;i<25&&t<end;i++){t+=.03;const[a,b]=pt(t);x.strokeStyle=`hsl(${t*18%360},100%,60%)`;x.shadowColor=x.strokeStyle;x.shadowBlur=6;x.beginPath();x.moveTo(px,py);x.lineTo(a,b);x.stroke();px=a;py=b}requestAnimationFrame(f)}
 ['R','r','d'].forEach(i=>$(i).oninput=reset);$('rd').onclick=reset;$('rn').onclick=()=>{$('R').value=60+Math.floor(Math.random()*140);$('r').value=10+Math.floor(Math.random()*120);$('d').value=10+Math.floor(Math.random()*140);reset()};reset();f();</script>
 </body></html>
