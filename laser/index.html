@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laser Lab — Mirror Puzzle</title>
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laser Lab — Mirror Puzzle</title>
 <meta name="description" content="Rotate mirrors to guide the laser into the target.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23100808%27/><path d=%27M2 22H14L22 10H30%27 fill=%27none%27 stroke=%27%23ff2d4d%27 stroke-width=%273%27/><path d=%27M12 26L24 6%27 stroke=%27%23cfe8ff%27 stroke-width=%274%27 stroke-linecap=%27round%27/></svg>">
 <style>
@@ -36,7 +36,7 @@ x.stroke();x.shadowBlur=0;
 x.fillStyle='#ff2d4d';x.fillRect(0,row*Z+Z/2-9,10,18);
 for(let y=0;y<N;y++)for(let xx=0;xx<N;xx++){const m=mir[y][xx];if(!m)continue;x.strokeStyle='#cfe8ff';x.lineWidth=5;x.lineCap='round';x.shadowColor='#8cf';x.shadowBlur=8;x.beginPath();
 const l=xx*Z+10,r=xx*Z+Z-10,tp=y*Z+10,b=y*Z+Z-10;m==1?(x.moveTo(l,b),x.lineTo(r,tp)):(x.moveTo(l,tp),x.lineTo(r,b));x.stroke();x.shadowBlur=0}
-if(good&&!solved){solved=true;const g=Math.max(1,par*3-moves+10)*10;score+=g;$('sc').textContent=score;flash=1;setTimeout(()=>{level++;gen()},900)}
+if(good&&!solved){solved=true;const g=Math.max(1,par*3-moves+10)*10;score+=g;$('sc').textContent=score;window.Hub&&Hub.score('laser',score);flash=1;setTimeout(()=>{level++;gen()},900)}
 if(solved){x.fillStyle='#6dff9a';x.font='bold 34px system-ui';x.textAlign='center';x.fillText('SOLVED!',256,40)}
 requestAnimationFrame(draw)}
 c.onpointerdown=e=>{if(solved)return;const r=c.getBoundingClientRect(),gx=Math.floor((e.clientX-r.left)/r.width*N),gy=Math.floor((e.clientY-r.top)/r.height*N);

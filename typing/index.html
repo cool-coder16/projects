@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Keyflow — Typing Test</title>
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Keyflow — Typing Test</title>
 <meta name="description" content="A 30-second typing speed test with live WPM.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231a1b26%27/><rect x=%274%27 y=%279%27 width=%2724%27 height=%2714%27 rx=%273%27 fill=%27none%27 stroke=%27%237aa2f7%27 stroke-width=%272%27/><path d=%27M8 14h2m3 0h2m3 0h2m3 0h2M10 18h12%27 stroke=%27%23bb9af7%27 stroke-width=%272%27 stroke-linecap=%27round%27/></svg>">
 <style>
@@ -27,7 +27,7 @@ function reset(){clearInterval(tm);const t=[...W].sort(()=>Math.random()-.5).joi
 $('text').innerHTML=chars.map(c=>`<span>${c}</span>`).join('');$('text').children[0].classList.add('cur');
 $('res').classList.remove('show');$('wpm').textContent=0;$('acc').textContent='100%';$('time').textContent=T;$('fill').style.width='100%';$('hint').style.display=''}
 function wpm(){const m=(Date.now()-start)/60000;return m>0?Math.round(pos/5/m):0}
-function finish(){done=1;clearInterval(tm);const w=wpm();const a=Math.round(100*(typed-errs)/Math.max(typed,1));
+function finish(){done=1;clearInterval(tm);const w=wpm();window.Hub&&Hub.score('typing',w);const a=Math.round(100*(typed-errs)/Math.max(typed,1));
 if(w>best){best=w;try{localStorage.setItem('kfBest',w)}catch(e){}$('best').textContent=w}
 $('rw').textContent=w+' WPM';$('rd').textContent=a+'% accuracy'+(w>=best&&w>0?' · new best!':'');$('res').classList.add('show')}
 function key(e){if(e.key=='Enter'){reset();return}if(done||e.ctrlKey||e.metaKey)return;const s=$('text').children;

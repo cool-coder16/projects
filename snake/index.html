@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neon Snake</title>
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neon Snake</title>
 <meta name="description" content="A fast neon snake game with golden bonus fruit.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23070a14%27/><path d=%27M6 24h12V14h8V8%27 fill=%27none%27 stroke=%27%2339ff88%27 stroke-width=%275%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/><circle cx=%2726%27 cy=%278%27 r=%272.5%27 fill=%27%23ff3d71%27/></svg>">
 <style>
@@ -27,7 +27,7 @@ if(h.x==food.x&&h.y==food.y){add(10);food=free();ate=1;if(!gold&&Math.random()<.
 else if(gold&&h.x==gold.x&&h.y==gold.y){add(50);gold=null;ate=1}
 if(!ate)sn.pop();if(gold&&--gold.t<=0)gold=null;draw()}
 function add(n){score+=n;$('sc').textContent=score;if(speed>55){speed-=3;loop()}}
-function over(){clearInterval(timer);state='over';if(score>best){best=score;$('bs').textContent=best;try{localStorage.setItem('snBest',best)}catch(e){}}draw()}
+function over(){clearInterval(timer);state='over';window.Hub&&Hub.score('snake',score);if(score>best){best=score;$('bs').textContent=best;try{localStorage.setItem('snBest',best)}catch(e){}}draw()}
 function cell(p,col,glow,s=1){x.shadowColor=glow||col;x.shadowBlur=12;x.fillStyle=col;const o=(1-s)*Z/2;x.beginPath();x.roundRect(p.x*Z+1+o,p.y*Z+1+o,Z-2-2*o,Z-2-2*o,5);x.fill()}
 function draw(){x.shadowBlur=0;x.fillStyle='#0a0f1e';x.fillRect(0,0,400,400);x.strokeStyle='#ffffff08';for(let i=0;i<=N;i++){x.beginPath();x.moveTo(i*Z,0);x.lineTo(i*Z,400);x.moveTo(0,i*Z);x.lineTo(400,i*Z);x.stroke()}
 if(!sn)return;cell(food,'#ff3d71');if(gold)cell(gold,'#ffd400','#ffd400',gold.t<15&&gold.t%2?.5:1);

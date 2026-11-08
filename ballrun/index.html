@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ball Run — Endless 3D Roll</title>
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ball Run — Endless 3D Roll</title>
 <meta name="description" content="Roll a glowing ball down an endless neon track. Dodge blocks, jump gaps, grab gems.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔵</text></svg>">
 <style>
@@ -60,7 +60,7 @@ function snd(f,d,type='sine',v=.15){if(!ac)return;const t=ac.currentTime,o=ac.cr
 function reset(){clearRows();pieces.forEach(p=>scene.remove(p.m));pieces=[];ball.visible=true;x=tx=0;y=.5;z=0;vy=0;dist=0;gems=0;spd=14;over=0;$('gm').textContent=0;ensure(0)}
 function start(){ac=ac||new AudioContext();reset();st='play';$('ov').style.display='none'}
 function die(){if(st!='play')return;st='dead';shake=.6;snd(110,.5,'sawtooth',.25);ball.visible=false;for(let i=0;i<24;i++){const m=new THREE.Mesh(BOX,ball.material);m.scale.setScalar(R(.1,.22));m.position.set(x,y,z);scene.add(m);pieces.push({m,v:new THREE.Vector3(R(-5,5),R(2,8),R(-6,3))})}
- const sc=Math.floor(dist);if(sc>best){best=sc;try{localStorage.setItem('brBest',best)}catch(e){}$('bs').textContent=best}
+ const sc=Math.floor(dist);window.Hub&&Hub.score('ballrun',sc);if(sc>best){best=sc;try{localStorage.setItem('brBest',best)}catch(e){}$('bs').textContent=best}
  setTimeout(()=>{$('t').textContent='CRASHED';$('s').innerHTML=`Distance <b>${sc}</b> · Gems <b>${gems}</b> · Best <b>${best}</b><br><b>Click or press Space to roll again</b>`;$('ov').style.display='grid'},900)}
 function jump(){if(st=='play'&&y<=.52){vy=JV;snd(520,.18,'triangle',.12)}}
 function update(dt){time+=dt;

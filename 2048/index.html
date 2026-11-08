@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2048</title>
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2048</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
 <style>:root{--a:#f67c5f}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#faf8ef;color:#776e65;font-family:system-ui,sans-serif;user-select:none}
 main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
@@ -9,7 +9,7 @@ button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18
 function add(){const e=g.map((v,i)=>v?-1:i).filter(i=>i>=0);if(e.length)g[e[Math.random()*e.length|0]]=Math.random()<.9?2:4}
 function slide(r){const a=r.filter(v=>v),o=[];for(let i=0;i<a.length;i++){if(a[i]==a[i+1]){o.push(a[i]*2);sc+=a[i]*2;i++}else o.push(a[i])}while(o.length<4)o.push(0);return o}
 function move(d){const ng=[...g];for(let k=0;k<4;k++){const idx=[0,1,2,3].map(j=>d<2?k*4+j:j*4+k);if(d%2)idx.reverse();const r=slide(idx.map(i=>g[i]));idx.forEach((i,j)=>ng[i]=r[j])}
-if(ng.join()==g.join())return;g=ng;add();best=Math.max(best,sc);draw();if(g.includes(2048))$('msg').textContent='🎉 2048! Keep going!';
+if(ng.join()==g.join())return;g=ng;add();best=Math.max(best,sc);window.Hub&&Hub.score('2048',sc);draw();if(g.includes(2048))$('msg').textContent='🎉 2048! Keep going!';
 if(g.every(v=>v)&&![...g.keys()].some(i=>(i%4<3&&g[i]==g[i+1])||(i<12&&g[i]==g[i+4])))$('msg').textContent='Game over — no moves left.'}
 function draw(){$('bd').innerHTML=g.map(v=>`<div class="t" style="${v?`background:hsl(${30+Math.log2(v)*28},80%,${v>4?58:85}%);color:${v>4?'#fff':'#776e65'};${v>512?'font-size:min(6vw,26px)':''}`:''}">${v||''}</div>`).join('');$('sc').textContent=sc;$('bs').textContent=best}
 function init(){g=Array(16).fill(0);sc=0;add();add();$('msg').textContent='Arrow keys or swipe. Merge equal tiles to reach 2048!';draw()}
