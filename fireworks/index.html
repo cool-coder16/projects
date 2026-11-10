@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fireworks Show</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎆</text></svg>">
+<style>:root{--a:#ff9f43}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#05060f;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>body{display:block}canvas{position:fixed;inset:0;cursor:crosshair;touch-action:none}#ui{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;background:#000a;padding:8px 14px;border-radius:24px;border:1px solid #ffffff33;font-size:14px}</style>
+<canvas id="c"></canvas><div id="ui">Click to launch · <label><input type="checkbox" id="au" checked> auto show</label></div>
+<script>const c=document.getElementById('c'),x=c.getContext('2d');let W,H,F=[],Pt=[],ac,nz;const R=(a,b)=>a+Math.random()*(b-a);
+const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight};rs();onresize=rs;
+function boom(){try{ac=ac||new AudioContext();const t=ac.currentTime,o=ac.createBufferSource(),g=ac.createGain(),f=ac.createBiquadFilter();if(!nz){nz=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=nz.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}o.buffer=nz;f.type='lowpass';f.frequency.value=R(300,900);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.connect(f);f.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.5)}catch(e){}}
+function launch(tx,ty){F.push({x:tx+R(-60,60),y:H,vx:R(-.5,.5),ty,h:R(0,360)})}
+function explode(f){const n=R(70,130),h=f.h,type=Math.floor(R(0,3));boom();for(let i=0;i<n;i++){const a=i/n*6.283,s=type==1?R(4,5):type==2?(i%2?5:2.5):R(1,6);Pt.push({x:f.x,y:f.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,h:h+R(-25,25)})}}
+c.onpointerdown=e=>launch(e.clientX,e.clientY);let tm=0;
+(function f(){x.fillStyle='rgba(5,6,15,.22)';x.fillRect(0,0,W,H);if(document.getElementById('au').checked&&++tm%55==0)launch(R(W*.15,W*.85),R(H*.12,H*.5));
+x.globalCompositeOperation='lighter';F.forEach(r=>{r.x+=r.vx;r.y-=7+(H-r.y)*.004;x.fillStyle=`hsl(${r.h},100%,70%)`;x.fillRect(r.x,r.y,3,10);if(r.y<=r.ty){r.d=1;explode(r)}});F=F.filter(r=>!r.d);
+Pt.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.06;p.vx*=.985;p.vy*=.985;p.l-=.012;x.fillStyle=`hsla(${p.h},100%,${55+p.l*25}%,${p.l})`;x.fillRect(p.x,p.y,2.5,2.5)});Pt=Pt.filter(p=>p.l>0);x.globalCompositeOperation='source-over';requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

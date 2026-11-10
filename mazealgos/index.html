@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maze Algorithms</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<style>:root{--a:#58a6ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(98vw,720px);border-radius:12px;background:#010409;border:1px solid #ffffff22}</style>
+<main><h1>MAZE ALGORITHMS</h1><canvas id="c" width="682" height="462"></canvas><div><button id="nw">🌀 New maze</button><button id="bf">Solve: BFS</button><button id="as">Solve: A*</button></div><p id="m">Watch a maze get carved, then see two search algorithms find the way out.</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),W=31,H=21,Z=22,$=id=>document.getElementById(id);let g,vis,path,iv;
+function* gen(){g=Array.from({length:H},()=>Array(W).fill(1));const st=[[1,1]];g[1][1]=0;yield;while(st.length){const[a,b]=st[st.length-1],n=[[2,0],[-2,0],[0,2],[0,-2]].filter(([dx,dy])=>g[b+dy]&&g[b+dy][a+dx]===1).sort(()=>Math.random()-.5);
+if(!n.length){st.pop();continue}const[dx,dy]=n[0];g[b+dy/2][a+dx/2]=0;g[b+dy][a+dx]=0;st.push([a+dx,b+dy]);yield}}
+function* solve(alg){vis=new Map();path=[];const s=[1,1],e=[W-2,H-2],key=(a,b)=>a+','+b,h=(a,b)=>Math.abs(a-e[0])+Math.abs(b-e[1]),open=[[s[0],s[1],0,h(...s)]],from=new Map(),best=new Map([[key(...s),0]]);let n=0;
+while(open.length){if(alg=='as')open.sort((p,q)=>(p[2]+p[3])-(q[2]+q[3]));const[a,b,d]=alg=='as'?open.shift():open.shift();if(vis.has(key(a,b)))continue;vis.set(key(a,b),n++);yield;if(a==e[0]&&b==e[1])break;
+for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const q=a+dx,r=b+dy;if(g[r]&&g[r][q]===0&&!vis.has(key(q,r))&&(!best.has(key(q,r))||best.get(key(q,r))>d+1)){best.set(key(q,r),d+1);from.set(key(q,r),[a,b]);open.push([q,r,d+1,h(q,r)])}}}
+let p=[e[0],e[1]];while(p&&(p[0]!=s[0]||p[1]!=s[1])){path.push(p);p=from.get(key(...p))}path.push(s);yield}
+function draw(){x.fillStyle='#010409';x.fillRect(0,0,682,462);for(let j=0;j<H;j++)for(let i=0;i<W;i++){if(g[j][i]){x.fillStyle='#1b2433';x.fillRect(i*Z,j*Z,Z,Z)}else if(vis&&vis.has(i+','+j)){x.fillStyle=`hsl(${200+vis.get(i+','+j)/6%120},80%,45%)`;x.fillRect(i*Z+1,j*Z+1,Z-2,Z-2)}}
+if(path)path.forEach(([i,j])=>{x.fillStyle='#ffd23f';x.fillRect(i*Z+5,j*Z+5,Z-10,Z-10)});x.fillStyle='#3fb950';x.fillRect(Z+3,Z+3,Z-6,Z-6);x.fillStyle='#f85149';x.fillRect((W-2)*Z+3,(H-2)*Z+3,Z-6,Z-6)}
+function run(it,spd,done){clearInterval(iv);iv=setInterval(()=>{for(let k=0;k<spd;k++){if(it.next().done){clearInterval(iv);done&&done();break}}draw()},16)}
+function nm(){vis=null;path=null;$('m').textContent='Carving with randomized depth-first search…';run(gen(),6,()=>$('m').textContent='Maze ready — pick a solver!')}
+const sv=a=>{if(!g[1]||g[1][1]!==0)return;vis=null;path=null;$('m').textContent=a=='bf'?'Breadth-first search explores in rings, guaranteeing the shortest path.':'A* heads toward the goal using a distance guess, so it explores far less.';run(solve(a),3,()=>$('m').textContent+=' Visited '+vis.size+' cells, path length '+path.length+'.')};
+$('nw').onclick=nm;$('bf').onclick=()=>sv('bf');$('as').onclick=()=>sv('as');g=Array.from({length:H},()=>Array(W).fill(1));nm();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

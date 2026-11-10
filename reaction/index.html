@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reaction Diffusion</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧫</text></svg>">
+<style>:root{--a:#5af}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#05080f;color:#e6f4ff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(94vw,560px);aspect-ratio:1;image-rendering:pixelated;border-radius:14px;cursor:crosshair;touch-action:none;border:1px solid #ffffff22}</style>
+<main><h1>REACTION DIFFUSION</h1><canvas id="c" width="140" height="140"></canvas><div id="b"></div><p>Two virtual chemicals react and spread, growing living patterns. Draw on the dish to add more!</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),N=140,img=x.createImageData(N,N);let A,B,F=.0545,K=.062,dn=0;
+const PRE=[['Coral',.0545,.062],['Spots',.035,.065],['Maze',.029,.057],['Mitosis',.0367,.0649],['Worms',.078,.061]];
+PRE.forEach(([n,f,k])=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>{F=f;K=k;seed()};document.getElementById('b').append(b)});
+document.getElementById('b').append(Object.assign(document.createElement('button'),{textContent:'Reset',onclick:()=>seed()}));
+function seed(){A=new Float32Array(N*N).fill(1);B=new Float32Array(N*N);for(let j=60;j<80;j++)for(let i=60;i<80;i++)B[j*N+i]=1}
+const put=e=>{const r=c.getBoundingClientRect(),cx=Math.floor((e.clientX-r.left)/r.width*N),cy=Math.floor((e.clientY-r.top)/r.height*N);for(let j=-3;j<=3;j++)for(let i=-3;i<=3;i++){const a=cx+i,b=cy+j;if(a>0&&b>0&&a<N-1&&b<N-1)B[b*N+a]=1}};
+c.onpointerdown=e=>{dn=1;put(e);c.setPointerCapture(e.pointerId)};c.onpointerup=()=>dn=0;c.onpointermove=e=>{if(dn)put(e)};seed();
+function step(){const nA=new Float32Array(A),nB=new Float32Array(B);for(let j=1;j<N-1;j++)for(let i=1;i<N-1;i++){const p=j*N+i,a=A[p],b=B[p],la=A[p-1]+A[p+1]+A[p-N]+A[p+N]-4*a+.0*(a),lb=B[p-1]+B[p+1]+B[p-N]+B[p+N]-4*b;
+const lA=.2*(la)+.05*(A[p-N-1]+A[p-N+1]+A[p+N-1]+A[p+N+1]-4*a)*0,rr=a*b*b;nA[p]=a+(1*(.2*la+.05*(A[p-N-1]+A[p-N+1]+A[p+N-1]+A[p+N+1]-4*a))-rr+F*(1-a));nB[p]=b+(.5*(.2*lb+.05*(B[p-N-1]+B[p-N+1]+B[p+N-1]+B[p+N+1]-4*b))+rr-(K+F)*b)}A=nA;B=nB}
+(function f(){for(let s=0;s<8;s++)step();for(let p=0;p<N*N;p++){const v=Math.min(1,Math.max(0,B[p]*3.2)),q=p*4;img.data[q]=10+v*230;img.data[q+1]=20+v*v*200+v*30;img.data[q+2]=60+v*190*(1-v*.4);img.data[q+3]=255}x.putImageData(img,0,0);requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

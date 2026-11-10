@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Planet Builder</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪐</text></svg>">
+<style>:root{--a:#ffcf6b}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#04050d;color:#e8eeff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(98vw,720px);border-radius:14px;background:#04050d;cursor:crosshair;touch-action:none;border:1px solid #ffffff1a}</style>
+<main><h1>PLANET BUILDER</h1><canvas id="c" width="720" height="460"></canvas><p>Drag and release to launch a planet — the longer the drag, the faster it flies. Watch gravity bend the orbits!</p><button id="cl">Reset</button><button id="pz">Pause</button></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),M=3000,COL=['#4dc3ff','#ff7a59','#6dff9a','#ff7ab6','#b388ff','#ffd23f'];let P,drag=null,mp=[0,0],pause=0,ci=0;
+const orb=(r,col)=>P.push({x:360+r,y:230,vx:0,vy:Math.sqrt(M/r),m:1,r:6,c:col,tr:[]});
+function reset(){P=[{x:360,y:230,vx:0,vy:0,m:M,r:18,c:'#ffd23f',s:1}];orb(110,COL[0]);orb(180,COL[1]);orb(250,COL[2])}
+const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)/r.width*720,(e.clientY-r.top)/r.height*460]};
+c.onpointerdown=e=>{drag=pt(e);mp=drag;c.setPointerCapture(e.pointerId)};c.onpointermove=e=>{mp=pt(e)};
+c.onpointerup=e=>{if(!drag)return;const p=pt(e);P.push({x:drag[0],y:drag[1],vx:(drag[0]-p[0])*.04,vy:(drag[1]-p[1])*.04,m:1,r:5+Math.random()*4,c:COL[ci++%COL.length],tr:[]});drag=null};
+document.getElementById('cl').onclick=reset;document.getElementById('pz').onclick=()=>pause^=1;reset();
+(function f(){if(!pause)for(let s=0;s<3;s++){P.forEach(b=>{if(b.s)return;let ax=0,ay=0;P.forEach(o=>{if(o===b)return;const dx=o.x-b.x,dy=o.y-b.y,d2=dx*dx+dy*dy+30,d=Math.sqrt(d2);ax+=o.m*dx/(d2*d);ay+=o.m*dy/(d2*d)});b.vx+=ax*.4;b.vy+=ay*.4});P.forEach(b=>{if(b.s)return;b.x+=b.vx*.4;b.y+=b.vy*.4});P=P.filter(b=>b.s||(Math.hypot(b.x-360,b.y-230)>18&&Math.abs(b.x-360)<1400&&Math.abs(b.y-230)<1400))}
+P.forEach(b=>{if(!b.s&&!pause){b.tr.push([b.x,b.y]);if(b.tr.length>140)b.tr.shift()}});
+x.fillStyle='#04050d';x.fillRect(0,0,720,460);P.forEach(b=>{if(b.s)return;x.strokeStyle=b.c+'66';x.lineWidth=1.5;x.beginPath();b.tr.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.stroke()});
+P.forEach(b=>{x.fillStyle=b.c;x.shadowColor=b.c;x.shadowBlur=b.s?40:12;x.beginPath();x.arc(b.x,b.y,b.r,0,7);x.fill()});x.shadowBlur=0;
+if(drag){x.strokeStyle='#fff9';x.setLineDash([5,5]);x.beginPath();x.moveTo(drag[0],drag[1]);x.lineTo(mp[0],mp[1]);x.stroke();x.setLineDash([]);x.fillStyle='#fff';x.beginPath();x.arc(drag[0],drag[1],5,0,7);x.fill()}requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
