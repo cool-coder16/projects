@@ -1,0 +1,60 @@
+<!doctype html><html lang="en" data-scroll><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Changelog — Mini Projects</title><meta name="theme-color" content="#0a0d16">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📜</text></svg>">
+<style>body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% -10%,#22305a 0,#0a0d16 55%) fixed;color:#e6edf3;font-family:system-ui,-apple-system,sans-serif;padding:70px 16px 50px}main{max-width:820px;margin:auto}h1{font-weight:200;letter-spacing:.35em;text-align:center;margin:0 0 6px;font-size:clamp(22px,4.5vw,36px)}.sub{text-align:center;opacity:.6;margin:0 0 22px}
+#pbar{position:fixed;top:0;left:0;right:0;padding:12px;display:flex;justify-content:space-between;z-index:50}#pbar a{color:#fff;text-decoration:none;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;font:600 14px system-ui;backdrop-filter:blur(6px)}
+.f{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}.f button{background:#ffffff12;color:#fff;border:1px solid #ffffff22;border-radius:16px;padding:6px 14px;cursor:pointer;font-size:13px}.f button.s{background:#7ee0ff;color:#04101a;font-weight:700;border-color:transparent}
+.rel{position:relative;padding:0 0 22px 28px;border-left:2px solid #ffffff1c;margin-left:8px}.rel:before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:#7ee0ff;box-shadow:0 0 12px #7ee0ff}.rel.latest:before{background:#ffd23f;box-shadow:0 0 14px #ffd23f}
+.rel h2{margin:0;font-size:20px}.rel .d{font-size:13px;opacity:.55;margin:2px 0 4px}.rel p{margin:4px 0 8px;opacity:.8}.rel ul{margin:0;padding:0;list-style:none}.rel li{padding:5px 0;font-size:15px;line-height:1.45;display:flex;gap:10px;align-items:baseline}
+.t{flex:none;font:700 10px system-ui;letter-spacing:.06em;padding:2px 8px;border-radius:9px;text-transform:uppercase;min-width:58px;text-align:center}.t.new{background:#2ecc7133;color:#6dff9a}.t.imp{background:#4dc3ff33;color:#7ee0ff}.t.fix{background:#ff9f4333;color:#ffb36b}.badge{display:inline-block;background:#ffd23f;color:#111;font:700 11px system-ui;padding:2px 8px;border-radius:9px;margin-left:8px;vertical-align:middle}</style></head><body>
+<div id="pbar"><a href="../">Projects</a><a href="../">🏠</a></div>
+<main><h1>CHANGELOG</h1><p class="sub">Everything that's new on Mini Projects, newest first</p><div class="f" id="f"></div><div id="l"></div></main>
+<script>
+const $=id=>document.getElementById(id);
+const R=[
+{v:'2.0',d:'Nov 10',t:'The Polish Update',latest:1,p:'A top-to-bottom tune-up of the whole site — no new games, just a much nicer place to play them.',c:[
+['imp','Brand-new home page: category filters (Arcade, Puzzle, Brain, Music, Creative, Relax, Learn), sorting, a Surprise Me button and live stats.'],
+['new','Favorites: star any project. Your favorites sync to your account across devices.'],
+['new','Continue playing: the home page remembers what you played last and shows it first.'],
+['new','Your best score now shows right on each game card, and 🏆 marks every game with a leaderboard.'],
+['new','Hall of Fame on the Leaderboards page: see who holds #1 in every game, plus who has the most crowns.'],
+['imp','Leaderboards show how long ago each score was set, and your own best for each game.'],
+['new','Celebrations: a toast and confetti whenever you beat your personal best (can be turned off in Settings).'],
+['new','Account page upgrades: member-since date, favorites, recently played, password-reset email, data export and self-service account deletion.'],
+['new','This changelog page!'],
+['imp','Arrow keys and Space no longer scroll the page while you play.'],
+['imp','Smoother page transitions, clearer keyboard focus rings and better tap behavior on phones.'],
+['imp','Compact mode for the home page, plus new toggles in Settings.'],
+['new','Friendly 404 page, plus share previews and a theme color for browsers.']]},
+{v:'1.9',d:'Nov 9–10',t:'The 100 Club',p:'Mini Projects reached 100 projects.',c:[
+['new','16 more projects: Whack-a-Bot, Quick Count, Rope Skip, Basket Catch, Slide 8, Odd One Out, Sort Rush, Moon Lander, Star Warp, Lissajous Lab, Neon Tunnel, Drum Pads, Rain Window, Flocking Boids, Orbit Clock and Langton’s Ant.'],
+['new','Search bar on the home page with smart related-word matching.'],
+['fix','Fixed the white flash when over-scrolling on every page.']]},
+{v:'1.8',d:'Nov 9',t:'Toys & Tinkering',c:[
+['new','10 creative toys: Planet Builder, Lava Lamp, Fireworks Show, Polyrhythm Circles, Reaction Diffusion, Doodle Physics, Terrain Maker, Maze Algorithms, Wind Tree and Chord Garden.'],
+['new','10 more scored games: Tap Speed, Higher or Lower, Arrow Rush, Bubble Pop, Lane Dodge, Wall Bounce, Stop Zone, Lit Grid, Balloon Pump and Orbit Dodge.']]},
+{v:'1.7',d:'Nov 8',t:'Chickens & Fixes',c:[
+['new','Chicken Jump: time your jump so the swinging block lands you centered. Solo or 2-player.'],
+['imp','The old runner is now Chicken Farm.'],
+['fix','Sky Hop now starts properly (a reserved browser name was crashing it).'],
+['fix','Dart Spinner darts now stick exactly where they hit.'],
+['fix','Geo Quiz no longer repeats questions.']]},
+{v:'1.6',d:'Nov 8',t:'Accounts & Leaderboards',c:[
+['new','Accounts: sign up with a username and password; your email is used only for password reset.'],
+['new','Cloud-saved best scores that follow you across devices.'],
+['new','Public leaderboards for every scored game.'],
+['new','10 new scored games: Flappy Rocket, Sky Hop, Aim Trainer, Math Sprint, Number Memory, Fruit Slice, Stroop Rush, Word Rain, Keepy Up and Dart Spinner.']]},
+{v:'1.5',d:'Nov 8',t:'Settings & Shortcuts',c:[
+['new','Settings page: sound, brightness, top bar, hover previews and home accent color.'],
+['new','Press Esc in any project to return home.'],
+['new','10 more games: Brick Breaker, Blockfall, Cube Dash, Beat Tiles, Ball Pit, Orrery, Geo Quiz, Spin Wheel, Falling Sand and Star Blaster.'],
+['new','Ball Run, a 3D endless rolling game.']]},
+{v:'1.0',d:'Nov 7',t:'Launch',p:'The first projects and the home page.',c:[
+['new','A first wave of games and toys: Cosmos, Aurora, Julia, Beatbox, Keyflow, Neon Snake, Slingshot, Laser Lab, Binary Bulbs, Deep Blue and Neon Drive.'],
+['new','Reflex, Hue Hunt, Unbeatable, Echo, Breathe, Life Lab, Pixel Studio, Keys, Spiro, Word Five and more.'],
+['new','One home page for everything, with hover previews and a top bar on every project.']]}];
+const L={new:'New',imp:'Improved',fix:'Fixed'};let flt='all';
+function draw(){$('l').innerHTML='';R.forEach(r=>{const items=r.c.filter(c=>flt=='all'||c[0]==flt);if(!items.length)return;const e=document.createElement('div');e.className='rel'+(r.latest?' latest':'');
+ e.innerHTML=`<h2>${r.t}${r.latest?'<span class="badge">LATEST</span>':''}</h2><div class="d">v${r.v} · ${r.d}</div>${r.p&&flt=='all'?'<p>'+r.p+'</p>':''}<ul>${items.map(c=>`<li><span class="t ${c[0]}">${L[c[0]]}</span><span>${c[1]}</span></li>`).join('')}</ul>`;$('l').append(e)})}
+[['all','All'],['new','New'],['imp','Improved'],['fix','Fixed']].forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.className=k==flt?'s':'';b.onclick=()=>{flt=k;[...$('f').children].forEach(x=>x.className=x===b?'s':'');draw()};$('f').append(b)});
+draw();
+</script></body></html>

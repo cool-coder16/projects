@@ -1,21 +1,22 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account</title>
+<!doctype html><html lang="en" data-scroll><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account</title><meta name="theme-color" content="#0a0d16">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
-<style>body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#1b2440,#0a0d16 60%);color:#e6edf3;font-family:system-ui,sans-serif;display:grid;place-items:center;padding:60px 16px}
-main{width:min(94vw,440px)}h1{font-weight:200;letter-spacing:.35em;text-align:center;margin:0 0 20px}.card{background:#ffffff0d;border:1px solid #ffffff1a;border-radius:16px;padding:20px}
-.tabs{display:flex;gap:6px;margin-bottom:16px}.tabs button{flex:1;background:#ffffff14;color:#fff;border:0;border-radius:10px;padding:9px;cursor:pointer;font-weight:600}.tabs button.s{background:#7ee0ff;color:#000}
-label{display:block;font-size:13px;opacity:.75;margin:12px 0 4px}input{width:100%;box-sizing:border-box;background:#0a0d16;color:#fff;border:1px solid #ffffff2a;border-radius:10px;padding:11px;font-size:16px}
-.go{width:100%;margin-top:16px;background:#7ee0ff;color:#000;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:16px;cursor:pointer}.go:disabled{opacity:.5}
-#msg{min-height:20px;margin-top:12px;font-size:14px}#msg.e{color:#ff7a8a}#msg.o{color:#6dff9a}small{opacity:.6;display:block;margin-top:6px}
-table{width:100%;border-collapse:collapse;margin:12px 0}td{padding:8px 4px;border-bottom:1px solid #ffffff14}td:last-child{text-align:right;font-weight:700;color:#7ee0ff}
-#pbar{position:fixed;top:0;left:0;right:0;padding:12px;display:flex;justify-content:space-between}#pbar a{color:#fff;text-decoration:none;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;font:600 14px system-ui}</style></head><body>
+<style>body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% -10%,#22305a 0,#0a0d16 55%) fixed;color:#e6edf3;font-family:system-ui,-apple-system,sans-serif;padding:70px 16px 50px}main{max-width:520px;margin:auto}h1{font-weight:200;letter-spacing:.35em;text-align:center;margin:0 0 20px;font-size:clamp(22px,4.5vw,34px)}
+#pbar{position:fixed;top:0;left:0;right:0;padding:12px;display:flex;justify-content:space-between;z-index:50}#pbar a{color:#fff;text-decoration:none;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;font:600 14px system-ui;backdrop-filter:blur(6px)}
+.card{background:#ffffff0d;border:1px solid #ffffff1a;border-radius:16px;padding:20px;margin-bottom:14px}.tabs{display:flex;gap:6px;margin-bottom:16px}.tabs button{flex:1;background:#ffffff14;color:#fff;border:0;border-radius:10px;padding:9px;cursor:pointer;font-weight:600}.tabs button.s{background:#7ee0ff;color:#000}
+label{display:block;font-size:13px;opacity:.75;margin:12px 0 4px}input{width:100%;box-sizing:border-box;background:#0a0d16;color:#fff;border:1px solid #ffffff2a;border-radius:10px;padding:11px;font-size:16px}input:focus{border-color:#7ee0ff;outline:0}
+.go{width:100%;margin-top:16px;background:#7ee0ff;color:#000;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:16px;cursor:pointer}.go:disabled{opacity:.5}.sec{background:#ffffff1f;color:#fff}.dg{background:#ff4d6d;color:#fff}
+#msg{min-height:20px;margin-top:12px;font-size:14px}#msg.e,.er{color:#ff7a8a}#msg.o,.ok{color:#6dff9a}small{opacity:.6;display:block;margin-top:6px}
+.hi{font-size:22px;margin:0}.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}.st div{background:#ffffff0d;border-radius:12px;padding:10px;text-align:center}.st b{display:block;font-size:22px;color:#7ee0ff}.st span{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.08em}
+h3{margin:18px 0 6px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}table{width:100%;border-collapse:collapse}td{padding:8px 4px;border-bottom:1px solid #ffffff14}td:last-child{text-align:right;font-weight:700;color:#7ee0ff}td a{color:inherit;text-decoration:none}td a:hover{color:#7ee0ff}
+.rc{display:flex;flex-wrap:wrap;gap:6px}.rc a{background:#ffffff12;border-radius:14px;padding:5px 12px;color:#fff;text-decoration:none;font-size:13px}.rc a:hover{background:#7ee0ff;color:#000}.row{display:flex;gap:8px;flex-wrap:wrap}.row .go{flex:1;min-width:150px;margin-top:8px;padding:10px;font-size:14px}</style></head><body>
 <div id="pbar"><a href="../">Projects</a><a href="../">🏠</a></div>
-<main><h1>ACCOUNT</h1><div class="card" id="c">Loading…</div></main>
+<main><h1>ACCOUNT</h1><div class="card" id="c">Loading…</div><p style="text-align:center;opacity:.5;font-size:13px"><a href="../leaderboard/" style="color:#7ee0ff">Leaderboards</a> · <a href="../changelog/" style="color:#7ee0ff">Changelog</a> · <a href="../settings/" style="color:#7ee0ff">Settings</a></p></main>
 <script>
-const $=id=>document.getElementById(id),UN=/^[a-z0-9_]{3,20}$/;
-let A,D,tab='login';
+const $=id=>document.getElementById(id),UN=/^[a-z0-9_]{3,20}$/;let A,D,tab='login';
 const say=(t,k)=>{$('msg').textContent=t;$('msg').className=k||''};
 const ERR={'auth/email-already-in-use':'That email already has an account.','auth/invalid-email':'That email looks invalid.','auth/weak-password':'Password must be at least 6 characters.','auth/network-request-failed':'Network problem — try again.','auth/too-many-requests':'Too many tries — wait a bit.'};
 const lookup=async u=>{const d=await D.collection('usernames').doc(u).get();return d.exists?d.data():null};
+const mask=e=>e.replace(/^(.).*(@.*)$/,'$1•••$2');
 function out(){$('c').innerHTML=`<div class="tabs"><button data-t="login">Log in</button><button data-t="signup">Sign up</button><button data-t="forgot">Forgot</button></div><form id="f"></form><div id="msg"></div>`;
  document.querySelectorAll('.tabs button').forEach(b=>{b.className=b.dataset.t==tab?'s':'';b.onclick=()=>{tab=b.dataset.t;out()}});
  const F={login:[['u','Username','text'],['p','Password','password']],signup:[['u','Username (3–20 letters, numbers, _)','text'],['e','Email (used only for password reset)','email'],['p','Password (6+ characters)','password']],forgot:[['u','Your username','text']]}[tab];
@@ -28,11 +29,27 @@ async function act(){const u=($('u').value||'').trim().toLowerCase();
   Hub.wr('hubUser',{username:u});Hub.badge();await Hub.sync();return inn(A.currentUser)}
  if(tab=='login'){const d=await lookup(u);if(!d)return say('Wrong username or password.','e');await A.signInWithEmailAndPassword(d.email,$('p').value);Hub.wr('hubUser',{username:u});Hub.badge();await Hub.sync();return inn(A.currentUser)}
  const d=await lookup(u);if(d)await A.sendPasswordResetEmail(d.email);say('If that username exists, a reset link was sent to the email on file. Check your inbox (and spam).','o')}
-async function inn(u){$('c').innerHTML='Loading your scores…';let s=Hub.rd('hubScores')||{};try{s=(await Hub.sync())||s}catch(e){}
- const rows=Object.entries(s).map(([g,x])=>`<tr><td></td><td>${x.v}</td></tr>`).join('');
- $('c').innerHTML=`<div style="font-size:20px">👋 Hi, <b id="nm"></b></div><small id="em"></small><h3 style="margin:18px 0 0;font-weight:600">Your best scores</h3><table id="t">${rows||'<tr><td colspan=2 style="text-align:left;color:inherit;font-weight:400">No scores yet — go play something!</td></tr>'}</table><button class="go" id="so" style="background:#ffffff22;color:#fff">Log out</button>`;
- $('nm').textContent=u.displayName||'';$('em').textContent=u.email||'';[...$('t').rows].forEach((r,i)=>{const e=Object.keys(s)[i];if(e){const G=Hub.GAMES[e];r.cells[0].textContent=G?G.name:e;if(G)r.cells[1].textContent=s[e].v+' '+G.unit}});
- $('so').onclick=async()=>{await A.signOut()}}
+async function inn(u){$('c').innerHTML='Loading your profile…';let s=Hub.rd('hubScores')||{};try{s=(await Hub.sync())||s}catch(e){}
+ const ids=Object.keys(s).filter(k=>Hub.GAMES[k]),fav=Hub.favs(),pl=Object.values(Hub.plays()).reduce((a,b)=>a+b,0),since=u.metadata&&u.metadata.creationTime?new Date(u.metadata.creationTime).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}):'';
+ $('c').innerHTML=`<p class="hi">👋 Hi, <b id="nm"></b></p><small id="em"></small><div class="st"><div><b>${ids.length}</b><span>Scored games</span></div><div><b>${fav.length}</b><span>Favorites</span></div><div><b>${pl}</b><span>Plays</span></div></div>
+ <h3>Your best scores</h3><table id="t"></table><h3>Recently played</h3><div class="rc" id="rc"></div>
+ <h3>Account</h3><div class="row"><button class="go sec" id="so">Log out</button><button class="go sec" id="pw">Send password reset</button><button class="go sec" id="ex">Export my data</button></div><div id="am" style="min-height:20px;font-size:14px;margin-top:8px"></div>
+ <h3 style="color:#ff7a8a">Danger zone</h3><button class="go dg" id="dl">Delete my account…</button><div id="dz" hidden><label>Confirm with your password — this permanently deletes your account, email, scores and leaderboard entries.</label><input id="dp" type="password" autocomplete="current-password" placeholder="Password"><button class="go dg" id="dg">Delete forever</button></div>
+ ${since?'<small style="margin-top:14px">Member since '+since+'</small>':''}`;
+ $('nm').textContent=u.displayName||'';$('em').textContent=u.email||'';
+ const t=$('t');if(!ids.length)t.innerHTML='<tr><td colspan=2 style="text-align:left;color:inherit;font-weight:400">No scores yet — go play something!</td></tr>';else ids.sort((a,b)=>Hub.GAMES[a].name.localeCompare(Hub.GAMES[b].name)).forEach(k=>{const g=Hub.GAMES[k],r=t.insertRow(),a=document.createElement('a');a.href='../'+g.dir+'/';a.textContent=g.name;r.insertCell().append(a);r.insertCell().textContent=s[k].v+' '+g.unit});
+ const rc=$('rc'),rec=Hub.recent().slice(0,8);if(!rec.length)rc.textContent='Nothing yet.';rec.forEach(d=>{const a=document.createElement('a');a.href='../'+d+'/';a.textContent=d;rc.append(a)});
+ const am=(t,k)=>{$('am').textContent=t;$('am').className=k||''};
+ $('so').onclick=async()=>{await A.signOut()};
+ $('pw').onclick=async()=>{try{await A.sendPasswordResetEmail(u.email);am('Reset link sent to '+mask(u.email)+'.','ok')}catch(e){am(ERR[e.code]||'Could not send right now.','er')}};
+ $('ex').onclick=()=>{const d={username:u.displayName,email:u.email,memberSince:u.metadata&&u.metadata.creationTime,bestScores:s,favorites:fav,recentlyPlayed:Hub.recent(),plays:Hub.plays()},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='mini-projects-data.json';a.click();am('Downloaded.','ok')};
+ $('dl').onclick=()=>{$('dz').hidden=!$('dz').hidden;if(!$('dz').hidden)$('dp').focus()};
+ $('dg').onclick=async()=>{const pw=$('dp').value;if(!pw)return am('Enter your password to confirm.','er');$('dg').disabled=true;am('Deleting…');
+  try{await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email,pw));
+   const bt=D.batch();Hub.LIST.forEach(g=>bt.delete(D.collection('leaderboard').doc(g.id).collection('entries').doc(u.uid)));await bt.commit();
+   await D.collection('scores').doc(u.uid).delete();if(u.displayName)await D.collection('usernames').doc(u.displayName).delete();await u.delete();
+   ['hubUser','hubScores','hubLbSynced','hubFavs','hubFavsAt'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});Hub.badge();say&&0;out();$('msg').textContent='Your account has been deleted. Goodbye! 👋';$('msg').className='o'}
+  catch(e){$('dg').disabled=false;am(e.code=='auth/wrong-password'||e.code=='auth/invalid-credential'?'Wrong password.':(e.message||'Could not delete — try again.'),'er')}}}
 (async()=>{try{({auth:A,db:D}=await Hub.load())}catch(e){$('c').textContent='Could not load the account service (blocked or offline).';return}
- A.onAuthStateChanged(u=>{if(u&&u.displayName){Hub.wr('hubUser',{username:u.displayName});Hub.badge();inn(u)}else if(!u){try{localStorage.removeItem('hubUser')}catch(e){}Hub.badge();out()}})})();
+ A.onAuthStateChanged(u=>{if(u&&u.displayName){Hub.wr('hubUser',{username:u.displayName});Hub.badge();inn(u)}else if(!u){try{localStorage.removeItem('hubUser')}catch(e){}Hub.badge();if(!$('msg')||!$('msg').textContent.includes('deleted'))out()}})})();
 </script></body></html>

@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Settings</title>
+<!doctype html><html lang="en" data-scroll><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Settings</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 <style>body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#1b2440,#0a0d16 60%);color:#e6edf3;font-family:system-ui,sans-serif;display:grid;place-items:center;padding:60px 16px}
 main{width:min(94vw,560px)}h1{font-weight:200;letter-spacing:.35em;text-align:center;margin:0 0 24px}.r{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#ffffff0d;border:1px solid #ffffff1a;border-radius:14px;padding:14px 16px;margin:10px 0}.r small{display:block;opacity:.6;margin-top:3px}
@@ -6,15 +6,15 @@ main{width:min(94vw,560px)}h1{font-weight:200;letter-spacing:.35em;text-align:ce
 button{background:#ffffff1f;color:#fff;border:0;border-radius:18px;padding:8px 14px;cursor:pointer;font-weight:600}button:hover{background:#ffffff33}input[type=range]{width:150px}input[type=color]{width:44px;height:32px;border:0;background:none}
 #pbar{position:fixed;top:0;left:0;right:0;padding:12px;display:flex;justify-content:space-between}#pbar a{color:#fff;text-decoration:none;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;font:600 14px system-ui}</style></head><body>
 <div id="pbar"><a href="../">Projects</a><a href="../">🏠</a></div>
-<main><h1>SETTINGS</h1><div id="l"></div><p style="text-align:center;opacity:.5;font-size:13px">Settings are saved in this browser and apply to every project. Press Esc in any project to return home.</p></main>
+<main><h1>SETTINGS</h1><div id="l"></div><p style="text-align:center;opacity:.5;font-size:13px">Settings are saved in this browser and apply to every project. Press Esc in any project to return home. · <a href="../changelog/" style="color:#7ee0ff">Changelog</a></p></main>
 <script>const L=document.getElementById('l');
 const rows=[['sound','🔊 Sound','Music and sound effects in all projects','t'],['esc','⎋ Esc goes home','Press Escape in any project to return to the menu','t'],['bar','🧭 Top bar','Show the Projects / home buttons on project pages','t'],['tips','💬 Hover previews','Show a description when hovering cards on the home page','t'],
-['bright','🌗 Brightness','Dim or brighten everything','r',50,120],['accent','🎨 Home accent color','Highlight color on the home page','c']];
+['celebrate','🎉 Celebrations','Confetti and a toast when you beat a personal best','t'],['compact','🧩 Compact home','Smaller cards on the home page so more fit on screen','t'],['bright','🌗 Brightness','Dim or brighten everything','r',50,120],['accent','🎨 Home accent color','Highlight color on the home page','c']];
 function draw(){L.innerHTML='';const s=PS.get();rows.forEach(([k,n,d,ty,a,b])=>{const r=document.createElement('div');r.className='r';r.innerHTML=`<div>${n}<small>${d}</small></div>`;let c;
 if(ty=='t'){c=document.createElement('div');c.className='t'+(s[k]?' on':'');c.onclick=()=>{PS.set(k,!PS.get()[k]);draw()}}
 else if(ty=='r'){c=document.createElement('input');c.type='range';c.min=a;c.max=b;c.value=s[k];c.oninput=()=>PS.set(k,+c.value)}
 else{c=document.createElement('input');c.type='color';c.value=s[k];c.oninput=()=>PS.set(k,c.value)}r.append(c);L.append(r)});
 const x=document.createElement('div');x.className='r';x.innerHTML='<div>🧪 Tools</div>';const bt=(t,f)=>{const b=document.createElement('button');b.textContent=t;b.onclick=f;x.append(b)};
 bt('Test sound',()=>{const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();g.gain.value=.15;o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.25)});
-bt('Clear saved scores',()=>{if(!confirm('Clear all saved high scores and game progress?'))return;const keep='projSettings';Object.keys(localStorage).filter(k=>k!=keep).forEach(k=>localStorage.removeItem(k))});
-bt('Reset settings',()=>{PS.reset();draw()});L.append(x)}draw();</script></body></html>
+bt('Clear saved scores',()=>{if(!confirm('Clear the saved high scores and game progress on this device? (Scores saved to your account stay there.)'))return;const keep=['projSettings','hubUser','hubFavs','hubFavsAt','hubRecent','hubPlays'];Object.keys(localStorage).filter(k=>!keep.includes(k)).forEach(k=>localStorage.removeItem(k))});
+bt('Clear favorites & history',()=>{if(!confirm('Clear your favorites, recently played and play counts on this device?'))return;['hubFavs','hubFavsAt','hubRecent','hubPlays'].forEach(k=>localStorage.removeItem(k))});bt('Reset settings',()=>{PS.reset();draw()});L.append(x)}draw();</script></body></html>
