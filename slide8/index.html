@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Slide 8</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+<style>:root{--a:#6dff9a}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#101624;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(80vw,330px);margin:12px auto}.t{aspect-ratio:1;border:0;border-radius:14px;background:#26334f;color:#fff;font-size:min(14vw,52px);font-weight:800;margin:0;padding:0}.t.e{background:transparent;box-shadow:none}</style>
+<main><h1>SLIDE 8</h1><p>Moves <b id="mv">0</b> · Best <b id="b">–</b> (fewer is better)</p><div id="g"></div><p id="m">Slide the tiles into order 1–8.</p><button id="nw">Shuffle</button></main>
+<script>const $=id=>document.getElementById(id);let a,mv,best=0,solved=1;
+function nbr(i){const r=Math.floor(i/3),c=i%3,o=[];if(r>0)o.push(i-3);if(r<2)o.push(i+3);if(c>0)o.push(i-1);if(c<2)o.push(i+1);return o}
+function draw(){$('g').innerHTML='';a.forEach((v,i)=>{const b=document.createElement('button');b.className='t'+(v?'':' e');b.textContent=v||'';b.onclick=()=>tap(i);$('g').append(b)});$('mv').textContent=mv}
+function tap(i){if(solved)return;const z=a.indexOf(0);if(!nbr(i).includes(z))return;[a[i],a[z]]=[a[z],a[i]];mv++;draw();if(a.every((v,j)=>v==(j+1)%9)){solved=1;best=best?Math.min(best,mv):mv;$('b').textContent=best;$('m').textContent='Solved in '+mv+' moves! 🎉';window.Hub&&Hub.score('slide8',mv,true)}}
+function nw(){a=[1,2,3,4,5,6,7,8,0];let z=8,p=-1;for(let k=0;k<80;k++){const o=nbr(z).filter(q=>q!=p),q=o[Math.floor(Math.random()*o.length)];[a[z],a[q]]=[a[q],a[z]];p=z;z=q}if(a.every((v,j)=>v==(j+1)%9))return nw();mv=0;solved=0;$('m').textContent='Slide the tiles into order 1–8.';draw()}
+$('nw').onclick=nw;nw();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

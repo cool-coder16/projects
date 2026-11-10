@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flocking Boids</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕊️</text></svg>">
+<style>:root{--a:#9fe0ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1a2a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>body{display:block}canvas{position:fixed;inset:0;cursor:crosshair}#ui{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;background:#000a;padding:8px 16px;border-radius:24px;font-size:14px;border:1px solid #ffffff33}</style>
+<canvas id="c"></canvas><div id="ui">Move to attract · click to scatter the flock</div>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),R=(a,b)=>a+Math.random()*(b-a);let W,H,mx=-1e4,my=-1e4,sc=0;const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight};rs();onresize=rs;
+const B=Array.from({length:180},()=>({x:R(0,innerWidth),y:R(0,innerHeight),vx:R(-2,2),vy:R(-2,2)}));onpointermove=e=>{mx=e.clientX;my=e.clientY};onpointerdown=()=>sc=40;
+(function f(){x.fillStyle='rgba(11,26,42,.3)';x.fillRect(0,0,W,H);if(sc>0)sc--;B.forEach(b=>{let cx=0,cy=0,ax=0,ay=0,sx=0,sy=0,n=0;B.forEach(o=>{if(o===b)return;const dx=o.x-b.x,dy=o.y-b.y,d=dx*dx+dy*dy;if(d<4900){n++;cx+=o.x;cy+=o.y;ax+=o.vx;ay+=o.vy;if(d<400){sx-=dx;sy-=dy}}});
+if(n){b.vx+=(cx/n-b.x)*.0008+(ax/n-b.vx)*.04+sx*.004;b.vy+=(cy/n-b.y)*.0008+(ay/n-b.vy)*.04+sy*.004}
+const dx=mx-b.x,dy=my-b.y,d=Math.hypot(dx,dy)+1;if(sc>0&&d<300){b.vx-=dx/d*.9;b.vy-=dy/d*.9}else if(d<260){b.vx+=dx/d*.05;b.vy+=dy/d*.05}
+const v=Math.hypot(b.vx,b.vy),m=sc>0?7:3.2;if(v>m){b.vx*=m/v;b.vy*=m/v}if(v<1.2){b.vx*=1.2;b.vy*=1.2}b.x+=b.vx;b.y+=b.vy;if(b.x<0)b.x=W;if(b.x>W)b.x=0;if(b.y<0)b.y=H;if(b.y>H)b.y=0;
+const a=Math.atan2(b.vy,b.vx);x.save();x.translate(b.x,b.y);x.rotate(a);x.fillStyle=`hsl(${190+v*12},90%,${65+v*3}%)`;x.beginPath();x.moveTo(9,0);x.lineTo(-6,-4);x.lineTo(-3,0);x.lineTo(-6,4);x.closePath();x.fill();x.restore()});requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
