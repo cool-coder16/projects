@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lit Grid</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔲</text></svg>">
+<style>:root{--a:#ffd23f}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0f1424;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(80vw,330px);margin:12px auto}.t{aspect-ratio:1;border:0;border-radius:16px;background:#1b2340;margin:0;padding:0}.t.on{background:var(--a);box-shadow:0 0 30px var(--a)}</style>
+<main><h1>LIT GRID</h1><p>Hits <b id="s">0</b> · Lives <b id="l">♥♥♥</b> · Best <b id="b">0</b></p><div id="g"></div><p id="m">Click the lit tile before it moves. It gets faster!</p><button id="go">Start</button></main>
+<script>const $=id=>document.getElementById(id);let s=0,lives=3,cur=-1,tm,run=0,best=0;
+for(let i=0;i<9;i++){const b=document.createElement('button');b.className='t';b.onpointerdown=()=>tap(i);$('g').append(b)}
+function show(){clearTimeout(tm);const n=Math.floor(Math.random()*9);cur=n;[...$('g').children].forEach((e,i)=>e.className='t'+(i==n?' on':''));tm=setTimeout(()=>miss(),Math.max(420,1200-s*35))}
+function miss(){lives--;$('l').textContent='♥'.repeat(Math.max(0,lives));if(lives<=0)end();else show()}
+function end(){run=0;clearTimeout(tm);[...$('g').children].forEach(e=>e.className='t');best=Math.max(best,s);$('b').textContent=best;$('m').textContent='Game over! '+s+' hits.';$('go').style.display='';$('go').textContent='Play again';window.Hub&&Hub.score('litgrid',s)}
+function tap(i){if(!run)return;if(i==cur){s++;$('s').textContent=s;show()}else miss()}
+$('go').onclick=()=>{s=0;lives=3;run=1;$('s').textContent=0;$('l').textContent='♥♥♥';$('m').textContent='Go!';$('go').style.display='none';show()};</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

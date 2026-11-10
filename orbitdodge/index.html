@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orbit Dodge</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌀</text></svg>">
+<style>:root{--a:#9d7cff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a0c1a;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>canvas{width:min(92vw,400px);border-radius:50%;background:radial-gradient(#141838,#05060f);touch-action:none;cursor:pointer;border:1px solid #ffffff22}</style>
+<main><h1>ORBIT DODGE</h1><canvas id="c" width="400" height="400"></canvas><p>Tap or press Space to reverse direction. Dodge the red hazards and collect the stars!</p></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d'),TAU=Math.PI*2,Rr=140;let a=0,dir=1,H=[],S=[],st='ready',t=0,stars=0,best=0;
+const dist=(p,q)=>{const d=Math.abs(p-q)%TAU;return Math.min(d,TAU-d)};const sc=()=>Math.floor(t/6)+stars*25;
+function turn(){if(st!='play'){H=[];S=[];t=0;stars=0;a=0;dir=1;st='play';return}dir*=-1}
+c.onpointerdown=turn;onkeydown=e=>{if(e.code=='Space'){e.preventDefault();turn()}};
+(function f(){if(st=='play'){t++;a+=dir*(.03+Math.min(t/20000,.025));if(t%Math.max(25,70-Math.floor(t/60))==0)H.push({a:Math.random()*TAU,b:t});if(t%140==0)S.push({a:Math.random()*TAU});
+H=H.filter(h=>t-h.b<260);H.forEach(h=>{if(t-h.b>30&&t-h.b<260&&dist(h.a,a)<.12){st='over';best=Math.max(best,sc());window.Hub&&Hub.score('orbitdodge',sc())}});S=S.filter(s=>{if(dist(s.a,a)<.13){stars++;return false}return true})}
+x.clearRect(0,0,400,400);x.strokeStyle='#ffffff22';x.lineWidth=2;x.beginPath();x.arc(200,200,Rr,0,TAU);x.stroke();
+H.forEach(h=>{const age=t-h.b,px=200+Math.cos(h.a)*Rr,py=200+Math.sin(h.a)*Rr;x.fillStyle=age<30?'#ff5d7366':'#ff5d73';x.shadowColor='#ff5d73';x.shadowBlur=age<30?0:12;x.beginPath();x.arc(px,py,age<30?6+age/3:14,0,7);x.fill()});
+S.forEach(s=>{x.fillStyle='#ffd23f';x.shadowColor='#ffd23f';x.shadowBlur=12;x.font='20px system-ui';x.textAlign='center';x.fillText('★',200+Math.cos(s.a)*Rr,208+Math.sin(s.a)*Rr)});
+x.fillStyle='#9d7cff';x.shadowColor='#9d7cff';x.shadowBlur=18;x.beginPath();x.arc(200+Math.cos(a)*Rr,200+Math.sin(a)*Rr,11,0,7);x.fill();x.shadowBlur=0;
+x.fillStyle='#fff';x.textAlign='center';x.font='bold 44px system-ui';x.fillText(sc(),200,195);x.font='14px system-ui';x.fillText('Best '+best+' · ★ '+stars,200,220);
+if(st!='play'){x.fillStyle='#000a';x.fillRect(60,250,280,80);x.fillStyle='#fff';x.font='bold 22px system-ui';x.fillText(st=='over'?'Hit! '+sc():'Orbit Dodge',200,285);x.font='14px system-ui';x.fillText('Tap to '+(st=='over'?'retry':'start'),200,310)}requestAnimationFrame(f)})();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>

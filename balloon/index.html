@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><script src="../settings.js"></script><script src="../hub.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Balloon Pump</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎈</text></svg>">
+<style>:root{--a:#ff6b81}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1a1030;color:#fff;font-family:system-ui,sans-serif;user-select:none}
+main{text-align:center;padding:16px;width:min(94vw,640px)}h1{margin:0 0 14px;letter-spacing:.25em;font-weight:300;color:var(--a);text-shadow:0 0 18px var(--a)}
+button{background:var(--a);color:#000;border:0;border-radius:20px;padding:9px 18px;font-weight:700;cursor:pointer;margin:4px}p{opacity:.7}</style></head><body>
+<style>#bl{font-size:60px;transition:font-size .1s;height:240px;display:grid;place-items:center;line-height:1}</style>
+<main><h1>BALLOON PUMP</h1><p>Round <b id="r">1</b>/8 · Balloon <b id="c">0</b> · Bank <b id="t">0</b> · Best <b id="b">0</b></p><div id="bl">🎈</div><div><button id="pump">Pump +1</button><button id="bank">Bank it</button></div><p id="m">Each pump adds a point to the balloon. Bank it before it pops or you lose it!</p></main>
+<script>const $=id=>document.getElementById(id);let cur,lim,rd,tot,best=0,done=0;
+function nb(){cur=0;lim=2+Math.floor(Math.random()*14);$('bl').style.fontSize='60px';$('bl').textContent='🎈';$('c').textContent=0;$('r').textContent=rd}
+function next(){if(rd>=8){best=Math.max(best,tot);$('b').textContent=best;done=1;$('m').textContent='All 8 balloons done! Final score '+tot+'. Press Pump to play again.';window.Hub&&Hub.score('balloon',tot);return}rd++;nb()}
+function init(){rd=1;tot=0;done=0;$('t').textContent=0;nb()}
+$('pump').onclick=()=>{if(done){init();return}cur++;if(cur>=lim){$('bl').style.fontSize='60px';$('bl').textContent='💥';$('m').textContent='POP! Lost '+(cur-1)+' points.';cur=0;setTimeout(next,700)}else{$('c').textContent=cur;$('bl').style.fontSize=(60+cur*11)+'px';$('m').textContent='Pump again or bank it?'}};
+$('bank').onclick=()=>{if(done||!cur)return;tot+=cur;$('t').textContent=tot;$('m').textContent='Banked '+cur+'!';next()};init();</script>
+<style>#pbar{position:fixed;top:0;left:0;right:0;height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:99999;pointer-events:none}#pbar a{pointer-events:auto;color:#fff;text-decoration:none;font:600 14px system-ui;background:#000a;padding:6px 12px;border-radius:16px;border:1px solid #fff3;backdrop-filter:blur(6px)}#pbar a:hover{background:#000d}</style><div id="pbar"><a href="../">Projects</a><a href="../" title="Home" aria-label="Home">🏠</a></div></body></html>
